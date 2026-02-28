@@ -8,10 +8,34 @@
   <meta property="og:title" content="Migrating from .cursorrules to .mdc files">
   <meta property="og:description" content="Switch from .cursorrules to .mdc format with frontmatter, per-file rules, and globs.">
   <meta property="og:image" content="https://nedcodes.dev/images/og-card.png">
+  <meta property="og:url" content="https://nedcodes.dev/guides/migrate-cursorrules-to-mdc">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Migrating from .cursorrules to .mdc files">
   <meta name="theme-color" content="#0a0a0a">
   <link rel="canonical" href="https://nedcodes.dev/guides/migrate-cursorrules-to-mdc">
   <link rel="icon" href="/images/favicon.png" type="image/png">
   <link rel="stylesheet" href="/styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Migrating from .cursorrules to .mdc files",
+    "description": "How to migrate from legacy .cursorrules to the modern .mdc format. What changes, what to check, and how to run the migration command.",
+    "author": {
+      "@type": "Person",
+      "name": "nedcodes",
+      "url": "https://nedcodes.dev"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "nedcodes",
+      "url": "https://nedcodes.dev"
+    },
+    "url": "https://nedcodes.dev/guides/migrate-cursorrules-to-mdc",
+    "datePublished": "2026-02-28",
+    "dateModified": "2026-02-28"
+  }
+  </script>
   <style>
     .article { padding: 100px 0 80px; max-width: 720px; margin: 0 auto; }
     .article h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2; }
@@ -148,6 +172,13 @@ Extract custom hooks.</code></pre>
       <li>Copy the rule content below the frontmatter</li>
       <li>Run <code>npx cursor-doctor scan</code> to validate</li>
     </ol>
+
+    <h2>Related guides</h2>
+    <ul>
+      <li><a href="/guides/write-cursor-rules-that-work">How to write Cursor rules that actually work</a></li>
+      <li><a href="/guides/convert-rules-between-ai-editors">Convert rules between Cursor, Windsurf, and Claude Code</a></li>
+      <li><a href="/guides/cursor-doctor-ci-github-actions">Run cursor-doctor in CI with GitHub Actions</a></li>
+    </ul>
 
     <div class="cta-box">
       <h3>Migrate now</h3>

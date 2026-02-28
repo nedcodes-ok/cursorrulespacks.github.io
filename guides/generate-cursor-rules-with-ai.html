@@ -8,10 +8,34 @@
   <meta property="og:title" content="Generate Cursor rules from your codebase with AI">
   <meta property="og:description" content="Scan your code with Gemini to generate .mdc rules automatically.">
   <meta property="og:image" content="https://nedcodes.dev/images/og-card.png">
+  <meta property="og:url" content="https://nedcodes.dev/guides/generate-cursor-rules-with-ai">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Generate Cursor rules from your codebase with AI">
   <meta name="theme-color" content="#0a0a0a">
   <link rel="canonical" href="https://nedcodes.dev/guides/generate-cursor-rules-with-ai">
   <link rel="icon" href="/images/favicon.png" type="image/png">
   <link rel="stylesheet" href="/styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Generate Cursor rules from your codebase with AI",
+    "description": "Use AI to generate Cursor rules automatically by scanning your codebase. How rulegen-ai works, what it produces, and when to use it.",
+    "author": {
+      "@type": "Person",
+      "name": "nedcodes",
+      "url": "https://nedcodes.dev"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "nedcodes",
+      "url": "https://nedcodes.dev"
+    },
+    "url": "https://nedcodes.dev/guides/generate-cursor-rules-with-ai",
+    "datePublished": "2026-02-28",
+    "dateModified": "2026-02-28"
+  }
+  </script>
   <style>
     .article { padding: 100px 0 80px; max-width: 720px; margin: 0 auto; }
     .article h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2; }
@@ -148,6 +172,13 @@ npx rulegen-ai</code></pre>
 
     <h2>Privacy and API usage</h2>
     <p>The tool sends code snippets to Google's Gemini API. If you're working with proprietary or sensitive code, review your company's policies before using this tool. You can limit what gets scanned with <code>.gitignore</code> or the <code>--path</code> flag to exclude sensitive directories.</p>
+
+    <h2>Related guides</h2>
+    <ul>
+      <li><a href="/guides/write-cursor-rules-that-work">How to write Cursor rules that actually work</a></li>
+      <li><a href="/guides/convert-rules-between-ai-editors">Convert rules between Cursor, Windsurf, and Claude Code</a></li>
+      <li><a href="/guides/cursor-token-budget">Cursor token budget: how many rules is too many?</a></li>
+    </ul>
 
     <div class="cta-box">
       <h3>Generate rules from your code</h3>

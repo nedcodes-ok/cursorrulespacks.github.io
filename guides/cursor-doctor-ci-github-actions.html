@@ -8,10 +8,34 @@
   <meta property="og:title" content="Run cursor-doctor in CI with GitHub Actions">
   <meta property="og:description" content="Lint Cursor rules in CI to catch broken frontmatter and invalid globs.">
   <meta property="og:image" content="https://nedcodes.dev/images/og-card.png">
+  <meta property="og:url" content="https://nedcodes.dev/guides/cursor-doctor-ci-github-actions">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Run cursor-doctor in CI with GitHub Actions">
   <meta name="theme-color" content="#0a0a0a">
   <link rel="canonical" href="https://nedcodes.dev/guides/cursor-doctor-ci-github-actions">
   <link rel="icon" href="/images/favicon.png" type="image/png">
   <link rel="stylesheet" href="/styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Run cursor-doctor in CI with GitHub Actions",
+    "description": "Lint your Cursor rules automatically in CI. Catch broken frontmatter, vague instructions, and invalid globs before they reach production.",
+    "author": {
+      "@type": "Person",
+      "name": "nedcodes",
+      "url": "https://nedcodes.dev"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "nedcodes",
+      "url": "https://nedcodes.dev"
+    },
+    "url": "https://nedcodes.dev/guides/cursor-doctor-ci-github-actions",
+    "datePublished": "2026-02-28",
+    "dateModified": "2026-02-28"
+  }
+  </script>
   <style>
     .article { padding: 100px 0 80px; max-width: 720px; margin: 0 auto; }
     .article h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2; }
@@ -139,6 +163,13 @@ jobs:
 
     <h2>Other CI platforms</h2>
     <p>The <code>check</code> command works in any CI environment that supports Node.js. For GitLab CI, CircleCI, or Jenkins, install Node and run <code>npx cursor-doctor check</code> the same way. The exit code behavior is identical.</p>
+
+    <h2>Related guides</h2>
+    <ul>
+      <li><a href="/guides/write-cursor-rules-that-work">How to write Cursor rules that actually work</a></li>
+      <li><a href="/guides/fix-cursor-rule-conflicts">How to fix Cursor rule conflicts</a></li>
+      <li><a href="/guides/cursor-rules-for-teams">Sharing Cursor rules across a team</a></li>
+    </ul>
 
     <div class="cta-box">
       <h3>Add rule checking to CI</h3>

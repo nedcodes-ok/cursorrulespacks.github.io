@@ -8,10 +8,34 @@
   <meta property="og:title" content="How to write Cursor rules that actually work">
   <meta property="og:description" content="Frontmatter, structure, examples, and prompt engineering for rules that stick.">
   <meta property="og:image" content="https://nedcodes.dev/images/og-card.png">
+  <meta property="og:url" content="https://nedcodes.dev/guides/write-cursor-rules-that-work">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to write Cursor rules that actually work">
   <meta name="theme-color" content="#0a0a0a">
   <link rel="canonical" href="https://nedcodes.dev/guides/write-cursor-rules-that-work">
   <link rel="icon" href="/images/favicon.png" type="image/png">
   <link rel="stylesheet" href="/styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How to write Cursor rules that actually work",
+    "description": "The difference between Cursor rules that get followed and rules that get ignored. Frontmatter, structure, examples, and prompt engineering tips.",
+    "author": {
+      "@type": "Person",
+      "name": "nedcodes",
+      "url": "https://nedcodes.dev"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "nedcodes",
+      "url": "https://nedcodes.dev"
+    },
+    "url": "https://nedcodes.dev/guides/write-cursor-rules-that-work",
+    "datePublished": "2026-02-28",
+    "dateModified": "2026-02-28"
+  }
+  </script>
   <style>
     .article { padding: 100px 0 80px; max-width: 720px; margin: 0 auto; }
     .article h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2; }
@@ -147,6 +171,13 @@ globs:
     <p>Run your rules through the linter to catch broken frontmatter, vague instructions, and other issues before they hit your project:</p>
     <pre><code>npx cursor-doctor scan</code></pre>
     <p>Or paste a single rule into the <a href="/playground">playground</a> for instant feedback.</p>
+
+    <h2>Related guides</h2>
+    <ul>
+      <li><a href="/guides/cursor-token-budget">Cursor token budget: how many rules is too many?</a></li>
+      <li><a href="/guides/fix-cursor-rule-conflicts">How to fix Cursor rule conflicts</a></li>
+      <li><a href="/guides/generate-cursor-rules-with-ai">Generate Cursor rules from your codebase with AI</a></li>
+    </ul>
 
     <div class="cta-box">
       <h3>Try the playground</h3>

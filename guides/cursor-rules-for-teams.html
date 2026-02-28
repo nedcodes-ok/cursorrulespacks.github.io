@@ -8,10 +8,34 @@
   <meta property="og:title" content="Sharing Cursor rules across a team">
   <meta property="og:description" content="Commit .cursor/rules/ to git, use globs for roles, and avoid merge conflicts.">
   <meta property="og:image" content="https://nedcodes.dev/images/og-card.png">
+  <meta property="og:url" content="https://nedcodes.dev/guides/cursor-rules-for-teams">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Sharing Cursor rules across a team">
   <meta name="theme-color" content="#0a0a0a">
   <link rel="canonical" href="https://nedcodes.dev/guides/cursor-rules-for-teams">
   <link rel="icon" href="/images/favicon.png" type="image/png">
   <link rel="stylesheet" href="/styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Sharing Cursor rules across a team",
+    "description": "How to share Cursor rules across a team using git, globs for different roles, and naming conventions to avoid merge conflicts.",
+    "author": {
+      "@type": "Person",
+      "name": "nedcodes",
+      "url": "https://nedcodes.dev"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "nedcodes",
+      "url": "https://nedcodes.dev"
+    },
+    "url": "https://nedcodes.dev/guides/cursor-rules-for-teams",
+    "datePublished": "2026-02-28",
+    "dateModified": "2026-02-28"
+  }
+  </script>
   <style>
     .article { padding: 100px 0 80px; max-width: 720px; margin: 0 auto; }
     .article h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2; }
@@ -169,6 +193,13 @@ npx cursor-doctor team drift</code></pre>
     <p>Before pushing rule changes, run the linter to catch errors:</p>
     <pre><code>npx cursor-doctor scan</code></pre>
     <p>This checks frontmatter, globs, and rule quality. Add it to your CI workflow to block PRs with broken rules (see the <a href="/guides/cursor-doctor-ci-github-actions">CI guide</a>).</p>
+
+    <h2>Related guides</h2>
+    <ul>
+      <li><a href="/guides/cursor-doctor-ci-github-actions">Run cursor-doctor in CI with GitHub Actions</a></li>
+      <li><a href="/guides/fix-cursor-rule-conflicts">How to fix Cursor rule conflicts</a></li>
+      <li><a href="/guides/cursor-token-budget">Cursor token budget: how many rules is too many?</a></li>
+    </ul>
 
     <div class="cta-box">
       <h3>Scan your team's rules</h3>

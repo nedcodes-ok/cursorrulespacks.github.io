@@ -8,10 +8,34 @@
   <meta property="og:title" content="Cursor token budget: how many rules is too many?">
   <meta property="og:description" content="Measure your rule token usage and stop wasting context window space.">
   <meta property="og:image" content="https://nedcodes.dev/images/og-card.png">
+  <meta property="og:url" content="https://nedcodes.dev/guides/cursor-token-budget">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Cursor token budget: how many rules is too many?">
   <meta name="theme-color" content="#0a0a0a">
   <link rel="canonical" href="https://nedcodes.dev/guides/cursor-token-budget">
   <link rel="icon" href="/images/favicon.png" type="image/png">
   <link rel="stylesheet" href="/styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Cursor token budget: how many rules is too many?",
+    "description": "Every Cursor rule eats context window tokens. Learn how to measure your token budget, find waste, and get better results with fewer tokens.",
+    "author": {
+      "@type": "Person",
+      "name": "nedcodes",
+      "url": "https://nedcodes.dev"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "nedcodes",
+      "url": "https://nedcodes.dev"
+    },
+    "url": "https://nedcodes.dev/guides/cursor-token-budget",
+    "datePublished": "2026-02-28",
+    "dateModified": "2026-02-28"
+  }
+  </script>
   <style>
     .article { padding: 100px 0 80px; max-width: 720px; margin: 0 auto; }
     .article h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2; }
@@ -90,6 +114,13 @@
       <li><strong>3-5 global rules</strong> (<code>alwaysApply: true</code>): naming, comments, error format, commit style</li>
       <li><strong>5-15 scoped rules</strong> (with globs): framework conventions, test patterns, API routes, component structure</li>
       <li><strong>Total budget under 3,000 tokens</strong> always-loaded</li>
+    </ul>
+
+    <h2>Related guides</h2>
+    <ul>
+      <li><a href="/guides/write-cursor-rules-that-work">How to write Cursor rules that actually work</a></li>
+      <li><a href="/guides/fix-cursor-rule-conflicts">How to fix Cursor rule conflicts</a></li>
+      <li><a href="/guides/cursor-rules-for-teams">Sharing Cursor rules across a team</a></li>
     </ul>
 
     <div class="cta-box">
