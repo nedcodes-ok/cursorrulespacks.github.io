@@ -25,6 +25,10 @@
     .tag-fix { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
     .tag-optimize { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
     .tag-write { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+    .tag-migrate { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
+    .tag-automate { background: rgba(6, 182, 212, 0.1); color: #06b6d4; }
+    .tag-convert { background: rgba(249, 115, 22, 0.1); color: #f97316; }
+    .tag-teams { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
   </style>
 </head>
 <body>
@@ -62,6 +66,36 @@
           <span class="tag tag-write">Write</span>
           <h2>How to write Cursor rules that actually work</h2>
           <p>The difference between rules that get followed and rules that get ignored. Frontmatter, structure, examples, and prompt engineering.</p>
+        </a>
+
+        <a href="/guides/migrate-cursorrules-to-mdc" class="guide-link">
+          <span class="tag tag-migrate">Migrate</span>
+          <h2>Migrating from .cursorrules to .mdc files</h2>
+          <p>Switch to the modern format with frontmatter, per-file rules, and globs. What changes, what to check, and how to run the migration command.</p>
+        </a>
+
+        <a href="/guides/cursor-doctor-ci-github-actions" class="guide-link">
+          <span class="tag tag-automate">Automate</span>
+          <h2>Run cursor-doctor in CI with GitHub Actions</h2>
+          <p>Lint your Cursor rules automatically to catch broken frontmatter and invalid globs before they reach production.</p>
+        </a>
+
+        <a href="/guides/generate-cursor-rules-with-ai" class="guide-link">
+          <span class="tag tag-write">Generate</span>
+          <h2>Generate Cursor rules from your codebase with AI</h2>
+          <p>Scan your code with Gemini to generate .mdc rules automatically. How rulegen-ai works, what it produces, and when to use it.</p>
+        </a>
+
+        <a href="/guides/convert-rules-between-ai-editors" class="guide-link">
+          <span class="tag tag-convert">Convert</span>
+          <h2>Convert rules between Cursor, Windsurf, and Claude Code</h2>
+          <p>Bidirectional conversion between .mdc, .cursorrules, CLAUDE.md, and Windsurf formats. Switch editors without rewriting your rules.</p>
+        </a>
+
+        <a href="/guides/cursor-rules-for-teams" class="guide-link">
+          <span class="tag tag-teams">Teams</span>
+          <h2>Sharing Cursor rules across a team</h2>
+          <p>Commit .cursor/rules/ to git, use globs for different roles, and avoid merge conflicts. How to keep your team in sync.</p>
         </a>
       </div>
     </div>

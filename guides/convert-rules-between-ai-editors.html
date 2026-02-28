@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Convert rules between Cursor, Windsurf, and Claude Code — nedcodes</title>
+  <meta name="description" content="Convert Cursor rules to Windsurf, Claude Code, or vice versa. Bidirectional conversion between .mdc, .cursorrules, CLAUDE.md, and AGENTS.md.">
+  <meta property="og:title" content="Convert rules between Cursor, Windsurf, and Claude Code">
+  <meta property="og:description" content="Bidirectional conversion between .mdc, .cursorrules, CLAUDE.md, and Windsurf formats.">
+  <meta property="og:image" content="https://nedcodes.dev/images/og-card.png">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="canonical" href="https://nedcodes.dev/guides/convert-rules-between-ai-editors">
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .article { padding: 100px 0 80px; max-width: 720px; margin: 0 auto; }
+    .article h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2; }
+    .article .meta { color: var(--text-muted); font-size: 14px; margin-bottom: 40px; }
+    .article h2 { font-size: 22px; font-weight: 600; margin: 40px 0 16px; letter-spacing: -0.01em; }
+    .article p { color: var(--text-muted); font-size: 16px; line-height: 1.7; margin-bottom: 16px; }
+    .article strong { color: var(--text); }
+    .article code { background: var(--surface); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; font-size: 14px; color: var(--green); }
+    .article pre { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow-x: auto; margin: 16px 0; }
+    .article pre code { border: none; padding: 0; background: none; font-size: 14px; line-height: 1.6; color: var(--text); }
+    .article ul, .article ol { color: var(--text-muted); font-size: 16px; line-height: 1.7; margin: 0 0 16px 24px; }
+    .article li { margin-bottom: 8px; }
+    .article .callout { background: var(--surface); border-left: 3px solid var(--accent); padding: 16px 20px; border-radius: 0 var(--radius) var(--radius) 0; margin: 24px 0; }
+    .article .callout p { margin: 0; }
+    .article .good-bad { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .article .gb-col { background: var(--surface); border-radius: var(--radius); padding: 16px; }
+    .article .gb-col h4 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+    .article .gb-bad h4 { color: #ef4444; }
+    .article .gb-good h4 { color: #22c55e; }
+    .cta-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-top: 48px; }
+    .cta-box h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .cta-box p { margin-bottom: 16px; }
+    .back-link { display: inline-block; color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    .tag-convert { background: rgba(249, 115, 22, 0.1); color: #f97316; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; margin-bottom: 16px; }
+    @media (max-width: 600px) { .article .good-bad { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">nedcodes</a>
+      <div class="nav-links">
+        <a href="/#tools">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/playground">Playground</a>
+        <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="article container">
+    <a href="/guides/" class="back-link">← All guides</a>
+    <span class="tag-convert">Convert</span>
+    <h1>Convert rules between Cursor, Windsurf, and Claude Code</h1>
+    <p class="meta">Bidirectional conversion between .mdc, .cursorrules, CLAUDE.md, and Windsurf formats.</p>
+
+    <h2>What rule-porter does</h2>
+    <p>Different AI editors use different rule formats. <code>rule-porter</code> converts between them so you can switch editors without rewriting your rules from scratch.</p>
+    <p>Supported formats:</p>
+    <ul>
+      <li><strong>Cursor:</strong> <code>.mdc</code> files with YAML frontmatter in <code>.cursor/rules/</code></li>
+      <li><strong>Cursor (legacy):</strong> <code>.cursorrules</code> single file</li>
+      <li><strong>Claude Code:</strong> <code>CLAUDE.md</code> in project root</li>
+      <li><strong>Windsurf:</strong> <code>.windsurfrules</code> or <code>.windsurf/rules/</code></li>
+      <li><strong>AGENTS.md:</strong> Multi-agent format (Pro feature)</li>
+    </ul>
+
+    <h2>Running the command</h2>
+    <p>The tool auto-detects your source format and prompts you to choose a target:</p>
+    <pre><code>npx rule-porter</code></pre>
+    <p>Or specify source and target explicitly:</p>
+    <pre><code>npx rule-porter --from mdc --to claude</code></pre>
+    <p>The converter reads your rules, translates them to the target format, and writes the output to the appropriate location for that editor.</p>
+
+    <h2>Direction flags</h2>
+    <p>Use <code>--from</code> and <code>--to</code> to control conversion direction:</p>
+    <pre><code>npx rule-porter --from cursor --to windsurf
+npx rule-porter --from claude --to mdc
+npx rule-porter --from cursorrules --to mdc</code></pre>
+    <p>Supported values:</p>
+    <ul>
+      <li><code>cursor</code> or <code>mdc</code> (same thing)</li>
+      <li><code>cursorrules</code> (legacy single-file format)</li>
+      <li><code>claude</code> (CLAUDE.md)</li>
+      <li><code>windsurf</code></li>
+      <li><code>agents</code> (AGENTS.md, Pro only)</li>
+    </ul>
+
+    <h2>What gets translated</h2>
+    <p>The converter handles format differences automatically:</p>
+
+    <h3>Frontmatter to comments</h3>
+    <p>Cursor's YAML frontmatter becomes comments in formats that don't support structured metadata:</p>
+    <pre><code># From .mdc frontmatter:
+---
+description: TypeScript naming conventions
+globs: ["**/*.ts"]
+---
+
+# To CLAUDE.md:
+# Rule: TypeScript naming conventions
+# Applies to: **/*.ts</code></pre>
+
+    <h3>Globs to file paths</h3>
+    <p>Some formats don't support globs. The converter notes where a rule was intended to apply but can't enforce scoping in the target format.</p>
+
+    <h3>Multiple files to single file</h3>
+    <p>When converting from <code>.mdc</code> (multiple files) to <code>CLAUDE.md</code> (single file), the tool merges all rules with section headers based on the original filenames.</p>
+
+    <h2>Pro features</h2>
+    <p>Converting from <code>AGENTS.md</code> to <code>.mdc</code> is a Pro feature. This lets you take multi-agent instructions and split them into per-file Cursor rules with appropriate globs.</p>
+    <p>The free version supports all other conversions, including:</p>
+    <ul>
+      <li><code>.mdc</code> to <code>CLAUDE.md</code></li>
+      <li><code>CLAUDE.md</code> to <code>.mdc</code></li>
+      <li><code>.cursorrules</code> to <code>.mdc</code></li>
+      <li>Windsurf to/from Cursor</li>
+    </ul>
+
+    <div class="callout">
+      <p><strong>Upgrade for AGENTS.md:</strong> The Pro version adds support for <code>AGENTS.md</code> to <code>.mdc</code> conversion. All other conversions are free.</p>
+    </div>
+
+    <h2>Checking the output</h2>
+    <p>After conversion, check the output manually. The tool handles structure but can't guarantee every rule makes sense in the target editor's context.</p>
+    <ul>
+      <li><strong>Cursor output:</strong> Run <code>npx cursor-doctor scan</code> to validate frontmatter</li>
+      <li><strong>Claude Code output:</strong> Open <code>CLAUDE.md</code> and verify sections are readable</li>
+      <li><strong>Windsurf output:</strong> Check <code>.windsurf/rules/</code> or <code>.windsurfrules</code> in the editor</li>
+    </ul>
+
+    <h2>Limits of conversion</h2>
+    <p>Some things don't translate perfectly between formats:</p>
+    <ul>
+      <li><strong>Globs:</strong> Editors without glob support can't scope rules to specific files. The converter preserves the intent in comments but can't enforce it.</li>
+      <li><strong>alwaysApply:</strong> Not all formats have an equivalent. Rules may load differently in the target editor.</li>
+      <li><strong>Rule references:</strong> If your rules reference each other by name (<code>@rulename</code>), these might break after conversion if filenames change.</li>
+    </ul>
+
+    <h2>When to use it</h2>
+    <p>The converter is useful when:</p>
+    <ul>
+      <li>You're switching editors and want to port existing rules</li>
+      <li>You're trying multiple editors and want the same rules in each</li>
+      <li>You found a good <code>CLAUDE.md</code> example and want it in Cursor format</li>
+      <li>You're migrating a team from one editor to another</li>
+    </ul>
+    <p>It's a starting point, not a perfect translation. Expect to refine the output manually.</p>
+
+    <div class="cta-box">
+      <h3>Convert your rules</h3>
+      <p>Switch between Cursor, Windsurf, and Claude Code without rewriting your rules from scratch.</p>
+      <pre style="margin-bottom:0;"><code>npx rule-porter</code></pre>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-brand">nedcodes</span>
+        <div class="footer-links">
+          <a href="mailto:hello@nedcodes.dev">hello@nedcodes.dev</a>
+          <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://dev.to/nedcodes" target="_blank" rel="noopener">Blog</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

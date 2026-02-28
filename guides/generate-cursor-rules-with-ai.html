@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generate Cursor rules from your codebase with AI — nedcodes</title>
+  <meta name="description" content="Use AI to generate Cursor rules automatically by scanning your codebase. How rulegen-ai works, what it produces, and when to use it.">
+  <meta property="og:title" content="Generate Cursor rules from your codebase with AI">
+  <meta property="og:description" content="Scan your code with Gemini to generate .mdc rules automatically.">
+  <meta property="og:image" content="https://nedcodes.dev/images/og-card.png">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="canonical" href="https://nedcodes.dev/guides/generate-cursor-rules-with-ai">
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .article { padding: 100px 0 80px; max-width: 720px; margin: 0 auto; }
+    .article h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2; }
+    .article .meta { color: var(--text-muted); font-size: 14px; margin-bottom: 40px; }
+    .article h2 { font-size: 22px; font-weight: 600; margin: 40px 0 16px; letter-spacing: -0.01em; }
+    .article p { color: var(--text-muted); font-size: 16px; line-height: 1.7; margin-bottom: 16px; }
+    .article strong { color: var(--text); }
+    .article code { background: var(--surface); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; font-size: 14px; color: var(--green); }
+    .article pre { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow-x: auto; margin: 16px 0; }
+    .article pre code { border: none; padding: 0; background: none; font-size: 14px; line-height: 1.6; color: var(--text); }
+    .article ul, .article ol { color: var(--text-muted); font-size: 16px; line-height: 1.7; margin: 0 0 16px 24px; }
+    .article li { margin-bottom: 8px; }
+    .article .callout { background: var(--surface); border-left: 3px solid var(--accent); padding: 16px 20px; border-radius: 0 var(--radius) var(--radius) 0; margin: 24px 0; }
+    .article .callout p { margin: 0; }
+    .article .good-bad { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .article .gb-col { background: var(--surface); border-radius: var(--radius); padding: 16px; }
+    .article .gb-col h4 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+    .article .gb-bad h4 { color: #ef4444; }
+    .article .gb-good h4 { color: #22c55e; }
+    .cta-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-top: 48px; }
+    .cta-box h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .cta-box p { margin-bottom: 16px; }
+    .back-link { display: inline-block; color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    .tag-write { background: rgba(34, 197, 94, 0.1); color: #22c55e; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; margin-bottom: 16px; }
+    @media (max-width: 600px) { .article .good-bad { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">nedcodes</a>
+      <div class="nav-links">
+        <a href="/#tools">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/playground">Playground</a>
+        <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="article container">
+    <a href="/guides/" class="back-link">← All guides</a>
+    <span class="tag-write">Generate</span>
+    <h1>Generate Cursor rules from your codebase with AI</h1>
+    <p class="meta">Scan your code with Gemini to generate .mdc rules automatically.</p>
+
+    <h2>What rulegen-ai does</h2>
+    <p>Instead of writing rules from scratch, <code>rulegen-ai</code> scans your codebase, analyzes patterns, and uses Gemini to generate structured <code>.mdc</code> rules with frontmatter.</p>
+    <p>It looks at:</p>
+    <ul>
+      <li><strong>File structure:</strong> Directory layout, naming conventions, imports</li>
+      <li><strong>Code patterns:</strong> Recurring function signatures, error handling, component structure</li>
+      <li><strong>Style choices:</strong> Const vs let, arrow functions vs regular functions, naming conventions</li>
+      <li><strong>Framework usage:</strong> React hooks, Express middleware, TypeScript patterns</li>
+    </ul>
+    <p>The tool generates rules that match what you're already doing, making it easier for Cursor to follow your project's existing conventions.</p>
+
+    <h2>How to run it</h2>
+    <p>You need a Gemini API key. The free tier works fine for most projects.</p>
+    <pre><code>export GEMINI_API_KEY=your_key_here
+npx rulegen-ai</code></pre>
+    <p>The command will:</p>
+    <ol>
+      <li>Scan your project files (respecting <code>.gitignore</code>)</li>
+      <li>Send code samples to Gemini with a prompt asking for rules</li>
+      <li>Parse the AI response into <code>.mdc</code> files with frontmatter</li>
+      <li>Write the generated rules to <code>.cursor/rules/</code></li>
+    </ol>
+
+    <div class="callout">
+      <p><strong>Get a free API key:</strong> Visit <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="color:var(--accent);">Google AI Studio</a> to generate a Gemini API key. The free tier includes enough quota for most codebases.</p>
+    </div>
+
+    <h2>What it produces</h2>
+    <p>The tool generates multiple <code>.mdc</code> files, each focused on a specific pattern it found in your code. Example output:</p>
+    <pre><code>.cursor/rules/
+├── typescript-naming.mdc
+├── react-components.mdc
+├── error-handling.mdc
+└── api-routes.mdc</code></pre>
+    <p>Each file includes:</p>
+    <ul>
+      <li><strong>Frontmatter:</strong> Description and globs that match where the pattern appears</li>
+      <li><strong>Rule content:</strong> Specific instructions based on what the AI observed in your code</li>
+      <li><strong>Examples:</strong> Code snippets from your project showing the pattern in use</li>
+    </ul>
+
+    <h2>Customizing the output</h2>
+    <p>The default model is <code>gemini-2.5-flash</code>. You can specify a different model if needed:</p>
+    <pre><code>npx rulegen-ai --model gemini-2.0-flash-exp</code></pre>
+    <p>Other options:</p>
+    <ul>
+      <li><strong>--path:</strong> Specify a directory to scan (default: current directory)</li>
+      <li><strong>--output:</strong> Write rules to a different directory (default: <code>.cursor/rules</code>)</li>
+      <li><strong>--max-files:</strong> Limit how many files to analyze (useful for large codebases)</li>
+    </ul>
+
+    <h2>When to use it vs writing manually</h2>
+    <p>Generated rules are a starting point, not a final product. They work best when:</p>
+
+    <div class="good-bad">
+      <div class="gb-col gb-good">
+        <h4>✓ Good fit</h4>
+        <ul style="font-size:14px;color:var(--text-muted);margin:0;padding-left:20px;">
+          <li>New to writing rules</li>
+          <li>Large existing codebase with established patterns</li>
+          <li>Want a baseline to refine manually</li>
+          <li>Onboarding new team members</li>
+        </ul>
+      </div>
+      <div class="gb-col gb-bad">
+        <h4>❌ Not ideal</h4>
+        <ul style="font-size:14px;color:var(--text-muted);margin:0;padding-left:20px;">
+          <li>Very small projects (faster to write manually)</li>
+          <li>Codebase has inconsistent patterns</li>
+          <li>Need highly specific custom rules</li>
+          <li>Working with proprietary or sensitive code</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>Review and refine</h2>
+    <p>AI-generated rules need human review. After running <code>rulegen-ai</code>, check the output for:</p>
+    <ul>
+      <li><strong>Vague instructions:</strong> The AI sometimes generates generic rules like "write clean code." Delete or make them specific.</li>
+      <li><strong>Incorrect patterns:</strong> If your codebase has bad practices, the AI might encode them as rules. Fix these manually.</li>
+      <li><strong>Over-scoped globs:</strong> Generated globs might be too broad or too narrow. Adjust to match your intent.</li>
+      <li><strong>Missing context:</strong> Add examples or clarifications where the AI's output is unclear.</li>
+    </ul>
+    <p>Run <code>npx cursor-doctor scan</code> after editing to validate frontmatter and catch quality issues.</p>
+
+    <h2>Privacy and API usage</h2>
+    <p>The tool sends code snippets to Google's Gemini API. If you're working with proprietary or sensitive code, review your company's policies before using this tool. You can limit what gets scanned with <code>.gitignore</code> or the <code>--path</code> flag to exclude sensitive directories.</p>
+
+    <div class="cta-box">
+      <h3>Generate rules from your code</h3>
+      <p>Scan your project with AI to create a baseline set of Cursor rules. Requires a free Gemini API key.</p>
+      <pre style="margin-bottom:0;"><code>npx rulegen-ai</code></pre>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-brand">nedcodes</span>
+        <div class="footer-links">
+          <a href="mailto:hello@nedcodes.dev">hello@nedcodes.dev</a>
+          <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://dev.to/nedcodes" target="_blank" rel="noopener">Blog</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

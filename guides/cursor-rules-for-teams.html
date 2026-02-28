@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sharing Cursor rules across a team — nedcodes</title>
+  <meta name="description" content="How to share Cursor rules across a team using git, globs for different roles, and naming conventions to avoid merge conflicts.">
+  <meta property="og:title" content="Sharing Cursor rules across a team">
+  <meta property="og:description" content="Commit .cursor/rules/ to git, use globs for roles, and avoid merge conflicts.">
+  <meta property="og:image" content="https://nedcodes.dev/images/og-card.png">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="canonical" href="https://nedcodes.dev/guides/cursor-rules-for-teams">
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .article { padding: 100px 0 80px; max-width: 720px; margin: 0 auto; }
+    .article h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2; }
+    .article .meta { color: var(--text-muted); font-size: 14px; margin-bottom: 40px; }
+    .article h2 { font-size: 22px; font-weight: 600; margin: 40px 0 16px; letter-spacing: -0.01em; }
+    .article p { color: var(--text-muted); font-size: 16px; line-height: 1.7; margin-bottom: 16px; }
+    .article strong { color: var(--text); }
+    .article code { background: var(--surface); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; font-size: 14px; color: var(--green); }
+    .article pre { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow-x: auto; margin: 16px 0; }
+    .article pre code { border: none; padding: 0; background: none; font-size: 14px; line-height: 1.6; color: var(--text); }
+    .article ul, .article ol { color: var(--text-muted); font-size: 16px; line-height: 1.7; margin: 0 0 16px 24px; }
+    .article li { margin-bottom: 8px; }
+    .article .callout { background: var(--surface); border-left: 3px solid var(--accent); padding: 16px 20px; border-radius: 0 var(--radius) var(--radius) 0; margin: 24px 0; }
+    .article .callout p { margin: 0; }
+    .article .good-bad { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .article .gb-col { background: var(--surface); border-radius: var(--radius); padding: 16px; }
+    .article .gb-col h4 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+    .article .gb-bad h4 { color: #ef4444; }
+    .article .gb-good h4 { color: #22c55e; }
+    .cta-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-top: 48px; }
+    .cta-box h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .cta-box p { margin-bottom: 16px; }
+    .back-link { display: inline-block; color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    .tag-teams { background: rgba(99, 102, 241, 0.1); color: #6366f1; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; margin-bottom: 16px; }
+    @media (max-width: 600px) { .article .good-bad { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">nedcodes</a>
+      <div class="nav-links">
+        <a href="/#tools">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/playground">Playground</a>
+        <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="article container">
+    <a href="/guides/" class="back-link">← All guides</a>
+    <span class="tag-teams">Teams</span>
+    <h1>Sharing Cursor rules across a team</h1>
+    <p class="meta">Commit .cursor/rules/ to git, use globs for different roles, and avoid merge conflicts.</p>
+
+    <h2>Why teams need shared rules</h2>
+    <p>Without shared rules, every developer on your team gets different AI suggestions. One person's Cursor uses camelCase, another's uses snake_case. One writes tests with Jest, another with Vitest. Shared rules keep everyone on the same conventions.</p>
+    <p>Benefits of committing rules to git:</p>
+    <ul>
+      <li><strong>Consistency:</strong> Everyone gets the same coding standards</li>
+      <li><strong>Onboarding:</strong> New hires clone the repo and rules just work</li>
+      <li><strong>Version control:</strong> Track changes to conventions over time</li>
+      <li><strong>Code review:</strong> Rule changes go through PR review like any other code</li>
+    </ul>
+
+    <h2>Commit .cursor/rules/ to git</h2>
+    <p>Cursor loads rules from <code>.cursor/rules/</code> in your project directory. Commit this folder to git so the team shares the same setup.</p>
+    <pre><code>git add .cursor/rules/
+git commit -m "Add shared Cursor rules"
+git push</code></pre>
+    <p>Everyone who pulls the repo gets the rules automatically. No manual setup needed.</p>
+
+    <div class="callout">
+      <p><strong>Don't commit personal rules:</strong> Keep team-wide rules in <code>.cursor/rules/</code>. Put personal preferences in your global Cursor config (outside the project).</p>
+    </div>
+
+    <h2>Use globs for different roles</h2>
+    <p>Not every rule applies to every file. Use globs to scope rules to specific parts of the codebase. This keeps frontend rules from firing in backend files, and vice versa.</p>
+    <p>Example structure:</p>
+    <pre><code>.cursor/rules/
+├── typescript-naming.mdc       # All .ts files
+├── react-components.mdc        # Frontend only
+├── api-routes.mdc              # Backend only
+└── database-queries.mdc        # DB layer only</code></pre>
+    <p>Frontend rule with scoped globs:</p>
+    <pre><code>---
+description: React component conventions
+globs:
+  - "src/components/**/*.tsx"
+  - "src/pages/**/*.tsx"
+---
+Use functional components.
+Extract custom hooks when logic repeats.
+Name props interfaces with Props suffix.</code></pre>
+    <p>Backend rule with different globs:</p>
+    <pre><code>---
+description: API error handling
+globs:
+  - "src/api/**/*.ts"
+  - "src/routes/**/*.ts"
+---
+Wrap route handlers in try-catch.
+Return {error, code} on failure.
+Log errors with request context.</code></pre>
+
+    <h2>Naming conventions</h2>
+    <p>Clear filenames make it obvious what each rule does and reduce merge conflicts. A few conventions that help:</p>
+    <ul>
+      <li><strong>Use descriptive names:</strong> <code>react-component-structure.mdc</code> beats <code>frontend.mdc</code></li>
+      <li><strong>Group by domain:</strong> <code>typescript-naming.mdc</code>, <code>typescript-types.mdc</code></li>
+      <li><strong>Avoid overlapping scopes:</strong> Don't create two rules with identical globs unless they cover different concerns</li>
+    </ul>
+
+    <div class="good-bad">
+      <div class="gb-col gb-bad">
+        <h4>❌ Vague names</h4>
+        <ul style="font-size:14px;color:var(--text-muted);margin:0;padding-left:20px;">
+          <li>frontend.mdc</li>
+          <li>backend.mdc</li>
+          <li>general.mdc</li>
+          <li>misc.mdc</li>
+        </ul>
+      </div>
+      <div class="gb-col gb-good">
+        <h4>✓ Clear names</h4>
+        <ul style="font-size:14px;color:var(--text-muted);margin:0;padding-left:20px;">
+          <li>react-hooks.mdc</li>
+          <li>api-error-handling.mdc</li>
+          <li>typescript-naming.mdc</li>
+          <li>database-queries.mdc</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>Avoiding merge conflicts</h2>
+    <p>Merge conflicts happen when two people edit the same rule file at the same time. A few ways to reduce this:</p>
+    <ul>
+      <li><strong>One concern per file:</strong> Smaller files = less chance two people edit the same one</li>
+      <li><strong>Split by domain:</strong> Frontend and backend devs work in different rule files</li>
+      <li><strong>Use descriptive commit messages:</strong> "Add error handling rule for API routes" beats "Update rules"</li>
+      <li><strong>Review in PRs:</strong> Treat rule changes like code changes. Discuss before merging.</li>
+    </ul>
+
+    <h2>Comparing setups across the team</h2>
+    <p>The <code>team-sync</code> command (Pro feature) compares your local rules setup with what's in git. It shows:</p>
+    <ul>
+      <li>Rules you have locally that aren't committed</li>
+      <li>Rules in the repo that you haven't pulled</li>
+      <li>Differences between your version and the committed version</li>
+    </ul>
+    <p>Run it before pushing changes to make sure you're in sync:</p>
+    <pre><code>npx cursor-doctor team-sync</code></pre>
+    <p>This is a Pro feature. The basic workflow (commit to git, pull to sync) works without it.</p>
+
+    <h2>Personal overrides</h2>
+    <p>Sometimes you want a personal rule that doesn't apply to the whole team. Put these in your global Cursor config, not in <code>.cursor/rules/</code>.</p>
+    <p>Global rules location:</p>
+    <ul>
+      <li><strong>macOS:</strong> <code>~/Library/Application Support/Cursor/User/globalStorage/.cursor/rules/</code></li>
+      <li><strong>Linux:</strong> <code>~/.config/Cursor/User/globalStorage/.cursor/rules/</code></li>
+      <li><strong>Windows:</strong> <code>%APPDATA%\Cursor\User\globalStorage\.cursor\rules\</code></li>
+    </ul>
+    <p>Global rules load in every project. Use them for personal preferences that don't affect the team.</p>
+
+    <h2>Validating team rules</h2>
+    <p>Before pushing rule changes, run the linter to catch errors:</p>
+    <pre><code>npx cursor-doctor scan</code></pre>
+    <p>This checks frontmatter, globs, and rule quality. Add it to your CI workflow to block PRs with broken rules (see the <a href="/guides/cursor-doctor-ci-github-actions">CI guide</a>).</p>
+
+    <div class="cta-box">
+      <h3>Scan your team's rules</h3>
+      <p>Check your shared rules for frontmatter errors, invalid globs, and quality issues before committing.</p>
+      <pre style="margin-bottom:0;"><code>npx cursor-doctor scan</code></pre>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-brand">nedcodes</span>
+        <div class="footer-links">
+          <a href="mailto:hello@nedcodes.dev">hello@nedcodes.dev</a>
+          <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://dev.to/nedcodes" target="_blank" rel="noopener">Blog</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

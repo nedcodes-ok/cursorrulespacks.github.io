@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Migrating from .cursorrules to .mdc files — nedcodes</title>
+  <meta name="description" content="How to migrate from legacy .cursorrules to the modern .mdc format. What changes, what to check, and how to run the migration command.">
+  <meta property="og:title" content="Migrating from .cursorrules to .mdc files">
+  <meta property="og:description" content="Switch from .cursorrules to .mdc format with frontmatter, per-file rules, and globs.">
+  <meta property="og:image" content="https://nedcodes.dev/images/og-card.png">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="canonical" href="https://nedcodes.dev/guides/migrate-cursorrules-to-mdc">
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .article { padding: 100px 0 80px; max-width: 720px; margin: 0 auto; }
+    .article h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2; }
+    .article .meta { color: var(--text-muted); font-size: 14px; margin-bottom: 40px; }
+    .article h2 { font-size: 22px; font-weight: 600; margin: 40px 0 16px; letter-spacing: -0.01em; }
+    .article p { color: var(--text-muted); font-size: 16px; line-height: 1.7; margin-bottom: 16px; }
+    .article strong { color: var(--text); }
+    .article code { background: var(--surface); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; font-size: 14px; color: var(--green); }
+    .article pre { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow-x: auto; margin: 16px 0; }
+    .article pre code { border: none; padding: 0; background: none; font-size: 14px; line-height: 1.6; color: var(--text); }
+    .article ul, .article ol { color: var(--text-muted); font-size: 16px; line-height: 1.7; margin: 0 0 16px 24px; }
+    .article li { margin-bottom: 8px; }
+    .article .callout { background: var(--surface); border-left: 3px solid var(--accent); padding: 16px 20px; border-radius: 0 var(--radius) var(--radius) 0; margin: 24px 0; }
+    .article .callout p { margin: 0; }
+    .article .good-bad { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .article .gb-col { background: var(--surface); border-radius: var(--radius); padding: 16px; }
+    .article .gb-col h4 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+    .article .gb-bad h4 { color: #ef4444; }
+    .article .gb-good h4 { color: #22c55e; }
+    .cta-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-top: 48px; }
+    .cta-box h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .cta-box p { margin-bottom: 16px; }
+    .back-link { display: inline-block; color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    .tag-migrate { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; margin-bottom: 16px; }
+    @media (max-width: 600px) { .article .good-bad { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">nedcodes</a>
+      <div class="nav-links">
+        <a href="/#tools">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/playground">Playground</a>
+        <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="article container">
+    <a href="/guides/" class="back-link">← All guides</a>
+    <span class="tag-migrate">Migrate</span>
+    <h1>Migrating from .cursorrules to .mdc files</h1>
+    <p class="meta">Switch to the modern format with frontmatter, per-file rules, and globs.</p>
+
+    <h2>Why .mdc is the current format</h2>
+    <p>Cursor moved from a single <code>.cursorrules</code> file to per-file <code>.mdc</code> rules inside <code>.cursor/rules/</code>. The new format gives you:</p>
+    <ul>
+      <li><strong>File-level scoping:</strong> Rules can target specific globs, reducing token waste</li>
+      <li><strong>Structured frontmatter:</strong> YAML metadata tells Cursor when to load each rule</li>
+      <li><strong>Better organization:</strong> Split one giant file into focused, maintainable rules</li>
+      <li><strong>Team-friendly:</strong> Easier to review and merge changes when rules are separate files</li>
+    </ul>
+
+    <h2>What changes</h2>
+    <p>The migration command converts your <code>.cursorrules</code> file into one or more <code>.mdc</code> files in <code>.cursor/rules/</code>.</p>
+
+    <div class="good-bad">
+      <div class="gb-col gb-bad">
+        <h4>Before (.cursorrules)</h4>
+        <pre style="margin:0;border:none;padding:0;"><code style="font-size:13px;"># TypeScript rules
+Use const by default.
+Avoid any type.
+
+# React rules
+Use functional components.
+Extract custom hooks.</code></pre>
+      </div>
+      <div class="gb-col gb-good">
+        <h4>After (.cursor/rules/)</h4>
+        <pre style="margin:0;border:none;padding:0;"><code style="font-size:13px;">typescript.mdc:
+---
+description: TypeScript conventions
+globs: ["**/*.ts", "**/*.tsx"]
+---
+Use const by default.
+Avoid any type.
+
+react.mdc:
+---
+description: React component patterns
+globs: ["src/**/*.tsx"]
+---
+Use functional components.
+Extract custom hooks.</code></pre>
+      </div>
+    </div>
+
+    <h2>Running the migration</h2>
+    <p>The migration command reads your <code>.cursorrules</code> file, splits it into logical sections, and writes separate <code>.mdc</code> files with frontmatter.</p>
+    <pre><code>npx cursor-doctor migrate</code></pre>
+    <p>The command will:</p>
+    <ol>
+      <li>Read <code>.cursorrules</code> from your project root</li>
+      <li>Create <code>.cursor/rules/</code> if it doesn't exist</li>
+      <li>Split rules by section headings (markdown headers like <code># TypeScript</code>)</li>
+      <li>Add frontmatter to each new <code>.mdc</code> file</li>
+      <li>Preserve your original <code>.cursorrules</code> file (you can delete it after verifying)</li>
+    </ol>
+
+    <div class="callout">
+      <p><strong>Safe operation:</strong> The migrate command never deletes your <code>.cursorrules</code> file. It only creates new <code>.mdc</code> files. Check the output, then delete the old file manually when ready.</p>
+    </div>
+
+    <h2>What to check after migrating</h2>
+    <p>The migration is automatic, but you should review the output to make sure frontmatter and globs match your intent.</p>
+    <ul>
+      <li><strong>Check descriptions:</strong> Make sure each <code>description</code> field accurately describes when the rule should apply</li>
+      <li><strong>Verify globs:</strong> Add or adjust <code>globs</code> patterns to scope rules to the right files</li>
+      <li><strong>Test in Cursor:</strong> Open a file that should trigger a rule and verify Cursor loads it (check the status bar or use <code>@rules</code> in chat)</li>
+      <li><strong>Run the linter:</strong> Use <code>npx cursor-doctor scan</code> to catch any frontmatter issues</li>
+    </ul>
+
+    <h2>Common gotchas</h2>
+    <p>A few things that trip people up after migration:</p>
+
+    <h3>Missing globs</h3>
+    <p>If the migrator couldn't guess which files a rule should apply to, it may create a rule with no globs and <code>alwaysApply: false</code>. This means the rule only fires when manually referenced by name. Add globs or set <code>alwaysApply: true</code> if you want it to load automatically.</p>
+
+    <h3>Over-splitting</h3>
+    <p>If your <code>.cursorrules</code> file had lots of small headings, you might end up with too many tiny <code>.mdc</code> files. Merge related rules back together. One rule per concern is good, one rule per sentence is too granular.</p>
+
+    <h3>Old file still active</h3>
+    <p>Cursor ignores <code>.cursorrules</code> if <code>.cursor/rules/</code> exists, but your editor might still show the old file as active. Delete or rename it to avoid confusion.</p>
+
+    <h2>Manual migration</h2>
+    <p>If you prefer full control, you can migrate manually:</p>
+    <ol>
+      <li>Create <code>.cursor/rules/</code> in your project</li>
+      <li>For each logical section in <code>.cursorrules</code>, create a new <code>.mdc</code> file</li>
+      <li>Add frontmatter with <code>description</code> and <code>globs</code></li>
+      <li>Copy the rule content below the frontmatter</li>
+      <li>Run <code>npx cursor-doctor scan</code> to validate</li>
+    </ol>
+
+    <div class="cta-box">
+      <h3>Migrate now</h3>
+      <p>Run the migration command to convert your <code>.cursorrules</code> file to the modern <code>.mdc</code> format.</p>
+      <pre style="margin-bottom:0;"><code>npx cursor-doctor migrate</code></pre>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-brand">nedcodes</span>
+        <div class="footer-links">
+          <a href="mailto:hello@nedcodes.dev">hello@nedcodes.dev</a>
+          <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://dev.to/nedcodes" target="_blank" rel="noopener">Blog</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

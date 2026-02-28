@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Run cursor-doctor in CI with GitHub Actions — nedcodes</title>
+  <meta name="description" content="Lint your Cursor rules automatically in CI. Catch broken frontmatter, vague instructions, and invalid globs before they reach production.">
+  <meta property="og:title" content="Run cursor-doctor in CI with GitHub Actions">
+  <meta property="og:description" content="Lint Cursor rules in CI to catch broken frontmatter and invalid globs.">
+  <meta property="og:image" content="https://nedcodes.dev/images/og-card.png">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="canonical" href="https://nedcodes.dev/guides/cursor-doctor-ci-github-actions">
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .article { padding: 100px 0 80px; max-width: 720px; margin: 0 auto; }
+    .article h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2; }
+    .article .meta { color: var(--text-muted); font-size: 14px; margin-bottom: 40px; }
+    .article h2 { font-size: 22px; font-weight: 600; margin: 40px 0 16px; letter-spacing: -0.01em; }
+    .article p { color: var(--text-muted); font-size: 16px; line-height: 1.7; margin-bottom: 16px; }
+    .article strong { color: var(--text); }
+    .article code { background: var(--surface); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; font-size: 14px; color: var(--green); }
+    .article pre { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow-x: auto; margin: 16px 0; }
+    .article pre code { border: none; padding: 0; background: none; font-size: 14px; line-height: 1.6; color: var(--text); }
+    .article ul, .article ol { color: var(--text-muted); font-size: 16px; line-height: 1.7; margin: 0 0 16px 24px; }
+    .article li { margin-bottom: 8px; }
+    .article .callout { background: var(--surface); border-left: 3px solid var(--accent); padding: 16px 20px; border-radius: 0 var(--radius) var(--radius) 0; margin: 24px 0; }
+    .article .callout p { margin: 0; }
+    .article .good-bad { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .article .gb-col { background: var(--surface); border-radius: var(--radius); padding: 16px; }
+    .article .gb-col h4 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+    .article .gb-bad h4 { color: #ef4444; }
+    .article .gb-good h4 { color: #22c55e; }
+    .cta-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-top: 48px; }
+    .cta-box h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .cta-box p { margin-bottom: 16px; }
+    .back-link { display: inline-block; color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    .tag-automate { background: rgba(6, 182, 212, 0.1); color: #06b6d4; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; margin-bottom: 16px; }
+    @media (max-width: 600px) { .article .good-bad { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">nedcodes</a>
+      <div class="nav-links">
+        <a href="/#tools">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/playground">Playground</a>
+        <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="article container">
+    <a href="/guides/" class="back-link">← All guides</a>
+    <span class="tag-automate">Automate</span>
+    <h1>Run cursor-doctor in CI with GitHub Actions</h1>
+    <p class="meta">Lint your Cursor rules automatically to catch broken frontmatter and invalid globs.</p>
+
+    <h2>Why lint rules in CI</h2>
+    <p>Rules with broken frontmatter or invalid globs fail silently. Cursor won't tell you the rule is broken, it just won't load. Running <code>cursor-doctor check</code> in CI catches these issues before they reach your team.</p>
+    <ul>
+      <li><strong>Catch frontmatter errors:</strong> Missing fields, invalid YAML, wrong data types</li>
+      <li><strong>Validate globs:</strong> Make sure glob patterns are syntactically correct</li>
+      <li><strong>Flag vague rules:</strong> Detect overly generic instructions that waste tokens</li>
+      <li><strong>Fail PRs early:</strong> Block merges that would break your rules setup</li>
+    </ul>
+
+    <h2>The check command</h2>
+    <p>The <code>check</code> command scans your <code>.cursor/rules/</code> directory and returns an exit code based on what it finds:</p>
+    <pre><code>npx cursor-doctor check</code></pre>
+    <p>Exit codes:</p>
+    <ul>
+      <li><strong>0:</strong> All rules valid</li>
+      <li><strong>1:</strong> Warnings found (vague descriptions, missing globs)</li>
+      <li><strong>2:</strong> Errors found (broken frontmatter, invalid YAML)</li>
+    </ul>
+    <p>In CI, you can fail the build on errors (exit code 2) while allowing warnings (exit code 1) to pass.</p>
+
+    <h2>GitHub Actions workflow</h2>
+    <p>Add this workflow to <code>.github/workflows/lint-cursor-rules.yml</code> to check rules on every push:</p>
+    <pre><code>name: Lint Cursor Rules
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Check Cursor rules
+        run: npx cursor-doctor check</code></pre>
+    <p>This workflow runs on every push and PR to <code>main</code>. If <code>npx cursor-doctor check</code> exits with code 2, the workflow fails and blocks the merge.</p>
+
+    <div class="callout">
+      <p><strong>Tip:</strong> Add <code>paths</code> to only run the workflow when rules files change. This saves CI minutes.</p>
+    </div>
+
+    <h2>Allowing warnings, failing on errors</h2>
+    <p>By default, the workflow above fails on both warnings and errors because <code>npx cursor-doctor check</code> exits with code 1 for warnings. To allow warnings but fail on errors, check the exit code explicitly:</p>
+    <pre><code>- name: Check Cursor rules
+  run: |
+    npx cursor-doctor check
+    EXIT_CODE=$?
+    if [ $EXIT_CODE -eq 2 ]; then
+      echo "Errors found, failing build"
+      exit 1
+    elif [ $EXIT_CODE -eq 1 ]; then
+      echo "Warnings found, passing with notice"
+      exit 0
+    fi</code></pre>
+    <p>This allows warnings to pass while still blocking merges that introduce broken frontmatter.</p>
+
+    <h2>What the check command catches</h2>
+    <p>The linter validates frontmatter structure, glob syntax, and rule quality:</p>
+
+    <h3>Frontmatter errors (exit code 2)</h3>
+    <ul>
+      <li>Missing or malformed YAML</li>
+      <li>Missing required <code>description</code> field</li>
+      <li>Invalid <code>alwaysApply</code> value (must be boolean)</li>
+      <li>Invalid glob syntax (unclosed brackets, invalid patterns)</li>
+    </ul>
+
+    <h3>Quality warnings (exit code 1)</h3>
+    <ul>
+      <li>Vague descriptions ("general rules", "coding standards")</li>
+      <li>Rules with no globs and <code>alwaysApply: false</code> (won't auto-load)</li>
+      <li>Overly broad globs (<code>**/*</code> without specific extensions)</li>
+      <li>Empty rule bodies</li>
+    </ul>
+
+    <h2>Running locally before committing</h2>
+    <p>Run the same check locally to catch issues before pushing:</p>
+    <pre><code>npx cursor-doctor check</code></pre>
+    <p>Fix any errors or warnings, then commit. Your CI workflow will pass on the first try.</p>
+
+    <h2>Other CI platforms</h2>
+    <p>The <code>check</code> command works in any CI environment that supports Node.js. For GitLab CI, CircleCI, or Jenkins, install Node and run <code>npx cursor-doctor check</code> the same way. The exit code behavior is identical.</p>
+
+    <div class="cta-box">
+      <h3>Add rule checking to CI</h3>
+      <p>Run <code>npx cursor-doctor check</code> in your CI pipeline to catch broken rules before they reach production.</p>
+      <pre style="margin-bottom:0;"><code>npx cursor-doctor check</code></pre>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-brand">nedcodes</span>
+        <div class="footer-links">
+          <a href="mailto:hello@nedcodes.dev">hello@nedcodes.dev</a>
+          <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://dev.to/nedcodes" target="_blank" rel="noopener">Blog</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
