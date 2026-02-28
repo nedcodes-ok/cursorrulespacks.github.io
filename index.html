@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>nedcodes — Tools for Cursor AI developers</title>
+  <meta name="description" content="Open-source CLI tools that fix, lint, generate, and port your Cursor AI rules. Built for developers who take their AI setup seriously.">
+  <meta property="og:title" content="nedcodes — Tools for Cursor AI developers">
+  <meta property="og:description" content="Open-source CLI tools that fix, lint, generate, and port your Cursor AI rules.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://nedcodes.dev">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">nedcodes</a>
+      <div class="nav-links">
+        <a href="#tools">Tools</a>
+        <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://nedcodes.gumroad.com/l/cursor-doctor-pro" class="nav-cta" target="_blank" rel="noopener">Get Pro</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <h1>Fix your Cursor AI setup<br>in seconds.</h1>
+      <p class="hero-sub">Open-source CLI tools that lint, diagnose, generate, and port your AI coding rules. Zero dependencies. Works everywhere Node runs.</p>
+      <div class="hero-actions">
+        <div class="code-block">
+          <code>npx cursor-doctor scan</code>
+          <button class="copy-btn" onclick="copyCommand(this)" data-cmd="npx cursor-doctor scan" aria-label="Copy command">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+        </div>
+        <a href="#tools" class="btn-secondary">See all tools ↓</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="stats">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat">
+          <span class="stat-number">2,100+</span>
+          <span class="stat-label">weekly npm downloads</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">60+</span>
+          <span class="stat-label">lint rules</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">80+</span>
+          <span class="stat-label">automated tests</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">0</span>
+          <span class="stat-label">dependencies</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tools" class="tools">
+    <div class="container">
+      <h2>The toolkit</h2>
+
+      <div class="tool-card tool-featured">
+        <div class="tool-header">
+          <h3>cursor-doctor</h3>
+          <span class="badge badge-pro">Free + Pro</span>
+        </div>
+        <p class="tool-tagline">The diagnostic and repair toolkit for your Cursor AI setup.</p>
+        <p>Run one command to find broken YAML frontmatter, conflicting rules, token waste, dead rules, and 60+ other problems. Auto-fix what's broken. Track rule performance over time.</p>
+
+        <div class="tool-features">
+          <div class="feature-col">
+            <h4>Free</h4>
+            <ul>
+              <li>Health score (A-F grade)</li>
+              <li>60+ lint checks</li>
+              <li>Token budget analysis</li>
+              <li>CLAUDE.md / AGENTS.md validation</li>
+              <li>MCP config linting</li>
+              <li>Migration from .cursorrules</li>
+              <li>Rule generator + init</li>
+              <li>VS Code extension</li>
+            </ul>
+          </div>
+          <div class="feature-col feature-pro">
+            <h4>Pro <span class="price">$9 one-time</span></h4>
+            <ul>
+              <li>Full audit report (exportable)</li>
+              <li>Auto-fix broken rules</li>
+              <li>Cross-format conflict detection</li>
+              <li>Rule performance tracking</li>
+              <li>AI-powered rule testing</li>
+              <li>Team sync + drift detection</li>
+            </ul>
+            <a href="https://nedcodes.gumroad.com/l/cursor-doctor-pro" class="btn-pro" target="_blank" rel="noopener">Get Pro key →</a>
+          </div>
+        </div>
+
+        <div class="tool-install">
+          <div class="code-block">
+            <code>npx cursor-doctor scan</code>
+            <button class="copy-btn" onclick="copyCommand(this)" data-cmd="npx cursor-doctor scan" aria-label="Copy command">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </button>
+          </div>
+          <div class="tool-links">
+            <a href="https://www.npmjs.com/package/cursor-doctor" target="_blank" rel="noopener">npm</a>
+            <a href="https://github.com/nedcodes-ok/cursor-doctor" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://marketplace.visualstudio.com/items?itemName=nedcodes.cursor-doctor" target="_blank" rel="noopener">VS Code</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-grid">
+        <div class="tool-card">
+          <div class="tool-header">
+            <h3>rule-gen</h3>
+            <span class="badge badge-free">Free</span>
+          </div>
+          <p class="tool-tagline">Generate AI coding rules from your actual source code.</p>
+          <p>Analyzes your codebase and generates Cursor rules that match how you actually write code. Powered by Gemini. Not just package.json detection — reads your real patterns.</p>
+          <div class="tool-install">
+            <div class="code-block">
+              <code>npx rulegen-ai</code>
+              <button class="copy-btn" onclick="copyCommand(this)" data-cmd="npx rulegen-ai" aria-label="Copy command">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              </button>
+            </div>
+            <div class="tool-links">
+              <a href="https://www.npmjs.com/package/rulegen-ai" target="_blank" rel="noopener">npm</a>
+              <a href="https://github.com/nedcodes-ok/rule-gen" target="_blank" rel="noopener">GitHub</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <h3>rule-porter</h3>
+            <span class="badge badge-free">Free</span>
+          </div>
+          <p class="tool-tagline">Port AI rules between Cursor, Windsurf, and CLAUDE.md.</p>
+          <p>Bidirectional conversion between .mdc, .windsurfrules, CLAUDE.md, AGENTS.md, and legacy .cursorrules. Move your rules wherever you need them.</p>
+          <div class="tool-install">
+            <div class="code-block">
+              <code>npx rule-porter</code>
+              <button class="copy-btn" onclick="copyCommand(this)" data-cmd="npx rule-porter" aria-label="Copy command">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              </button>
+            </div>
+            <div class="tool-links">
+              <a href="https://www.npmjs.com/package/rule-porter" target="_blank" rel="noopener">npm</a>
+              <a href="https://github.com/nedcodes-ok/rule-porter" target="_blank" rel="noopener">GitHub</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="built-to-last">
+    <div class="container">
+      <h2>Built to last</h2>
+      <div class="qualities-grid">
+        <div class="quality">
+          <h4>Zero dependencies</h4>
+          <p>No supply chain risk. Fast installs. Runs anywhere Node runs.</p>
+        </div>
+        <div class="quality">
+          <h4>Security hardened</h4>
+          <p>Input sanitization, path traversal guards, SSRF protection, command injection prevention.</p>
+        </div>
+        <div class="quality">
+          <h4>Cross-platform</h4>
+          <p>Full Windows CRLF support. Tested on macOS, Linux, and Windows.</p>
+        </div>
+        <div class="quality">
+          <h4>Thoroughly tested</h4>
+          <p>80+ automated tests covering every feature, edge case, and regression.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container">
+      <h2>Try it now</h2>
+      <p>One command. No install needed. See what's wrong with your Cursor setup.</p>
+      <div class="code-block code-block-lg">
+        <code>npx cursor-doctor scan</code>
+        <button class="copy-btn" onclick="copyCommand(this)" data-cmd="npx cursor-doctor scan" aria-label="Copy command">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-brand">nedcodes</span>
+        <div class="footer-links">
+          <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://dev.to/nedcodes" target="_blank" rel="noopener">Blog</a>
+          <a href="https://nedcodes.gumroad.com" target="_blank" rel="noopener">Store</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function copyCommand(btn) {
+      const cmd = btn.getAttribute('data-cmd');
+      navigator.clipboard.writeText(cmd).then(() => {
+        btn.classList.add('copied');
+        setTimeout(() => btn.classList.remove('copied'), 1500);
+      });
+    }
+  </script>
+</body>
+</html>
