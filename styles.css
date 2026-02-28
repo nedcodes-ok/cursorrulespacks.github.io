@@ -155,6 +155,21 @@ a:hover { text-decoration: underline; }
 .copy-btn:hover { color: var(--text); }
 .copy-btn.copied { color: var(--green); }
 
+/* Hero demo */
+.hero-demo {
+  margin-top: 48px;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-demo img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
 /* Stats */
 .stats {
   padding: 40px 0;
@@ -391,6 +406,19 @@ a:hover { text-decoration: underline; }
 .cta-section p {
   color: var(--text-muted);
   margin-bottom: 28px;
+  font-size: 16px;
+}
+
+.cta-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.cta-section .btn-pro {
+  padding: 14px 32px;
   font-size: 16px;
 }
 

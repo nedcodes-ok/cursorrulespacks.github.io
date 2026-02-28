@@ -10,7 +10,15 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://nedcodes.dev">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+  <meta name="twitter:title" content="nedcodes — Tools for Cursor AI developers">
+  <meta name="twitter:description" content="Open-source CLI tools that fix, lint, generate, and port your Cursor AI rules.">
+  <meta name="twitter:image" content="https://nedcodes.dev/images/og-card.png">
+  <meta property="og:image" content="https://nedcodes.dev/images/og-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="canonical" href="https://nedcodes.dev/">
+  <link rel="icon" href="/images/favicon.png" type="image/png">
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -20,7 +28,7 @@
       <div class="nav-links">
         <a href="#tools">Tools</a>
         <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://nedcodes.gumroad.com/l/cursor-doctor-pro" class="nav-cta" target="_blank" rel="noopener">Get Pro</a>
+        <a href="#tools" class="nav-cta">Get Pro</a>
       </div>
     </div>
   </nav>
@@ -37,6 +45,9 @@
           </button>
         </div>
         <a href="#tools" class="btn-secondary">See all tools ↓</a>
+      </div>
+      <div class="hero-demo">
+        <img src="/images/demo.gif" alt="cursor-doctor scan running in terminal" loading="lazy" width="800">
       </div>
     </div>
   </header>
@@ -191,13 +202,16 @@
 
   <section class="cta-section">
     <div class="container">
-      <h2>Try it now</h2>
-      <p>One command. No install needed. See what's wrong with your Cursor setup.</p>
-      <div class="code-block code-block-lg">
-        <code>npx cursor-doctor scan</code>
-        <button class="copy-btn" onclick="copyCommand(this)" data-cmd="npx cursor-doctor scan" aria-label="Copy command">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-        </button>
+      <h2>Start free. Upgrade when you need more.</h2>
+      <p>Run the free scan to find problems. Unlock Pro to fix them automatically, track performance, and sync your team.</p>
+      <div class="cta-buttons">
+        <div class="code-block code-block-lg">
+          <code>npx cursor-doctor scan</code>
+          <button class="copy-btn" onclick="copyCommand(this)" data-cmd="npx cursor-doctor scan" aria-label="Copy command">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+        </div>
+        <a href="https://nedcodes.gumroad.com/l/cursor-doctor-pro" class="btn-pro" target="_blank" rel="noopener">Get Pro for $9 →</a>
       </div>
     </div>
   </section>
