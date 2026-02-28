@@ -111,6 +111,7 @@ function generateScript() {
   ${imperativeVerbs ? `var IMPERATIVE_VERBS = /\\\\b(${imperativeVerbs.join('|')})\\\\b/i;` : ''}
 
   function parseFrontmatter(content) {
+    content = content.replace(/\\r\\n/g, '\\n').replace(/\\r/g, '\\n');
     var match = content.match(/^---\\n([\\s\\S]*?)\\n---/);
     if (!match) return { found: false, data: null, error: null };
     try {
@@ -154,6 +155,7 @@ function generateScript() {
   }
 
   function lint(content) {
+    content = content.replace(/\\r\\n/g, '\\n').replace(/\\r/g, '\\n');
     var issues = [];
     var fm = parseFrontmatter(content);
     var body = getBody(content);
@@ -392,7 +394,7 @@ function generateScript() {
     conflict: '---\\ndescription: Style rules\\nalwaysApply: true\\n---\\nAlways use semicolons at the end of every statement.\\n\\nAvoid semicolons. No semicolons in this project.',
     good: '---\\ndescription: TypeScript error handling in API routes\\nglobs:\\n  - "src/api/**/*.ts"\\n  - "src/routes/**/*.ts"\\n---\\nWrap all route handlers in try-catch blocks.\\n\\nReturn structured error responses:\\n\\n\`\`\`typescript\\ncatch (error) {\\n  return Response.json(\\n    { error: error.message, code: "INTERNAL_ERROR" },\\n    { status: 500 }\\n  );\\n}\\n\`\`\`\\n\\nNever expose stack traces in production responses.\\nLog the full error with \`console.error(error)\` before returning.',
     dead: '---\\ndescription: Python formatting\\nalwaysApply: false\\n---\\nUse black for formatting.\\nLine length 88 characters.',
-    bloated: '---\\ndescription: Everything about our codebase\\nalwaysApply: true\\n---\\n' + Array(101).join('This rule covers everything.\\n') + '\\nPlease try to maybe follow these guidelines.\\nI want you to be careful.\\nTODO: finish this rule later.'
+    bloated: '---\\ndescription: Everything about our codebase\\nalwaysApply: true\\n---\\n' + Array(201).join('This rule covers everything.\\n') + '\\nPlease try to maybe follow these guidelines.\\nI want you to be careful.\\nTODO: finish this rule later.'
   };
 
   function loadExample(name) {
