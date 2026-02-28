@@ -71,7 +71,7 @@
     <ol>
       <li><strong>Pick one source of truth per topic.</strong> If you have style rules, put them in one file. Don't split "use semicolons" and "use single quotes" across three files.</li>
       <li><strong>Use globs to narrow scope.</strong> Instead of two <code>alwaysApply: true</code> rules fighting, make one apply to <code>src/**/*.ts</code> and the other to <code>tests/**/*.ts</code>.</li>
-      <li><strong>Delete your .cursorrules file.</strong> If you have both <code>.cursorrules</code> and <code>.cursor/rules/*.mdc</code>, run <code>npx cursor-doctor migrate</code> to convert and then delete the legacy file.</li>
+      <li><strong>Delete your .cursorrules file.</strong> If you have both <code>.cursorrules</code> and <code>.cursor/rules/*.mdc</code>, Cursor loads both and .mdc takes precedence on conflicts. Run <code>npx cursor-doctor migrate</code> to convert, then delete the legacy file to avoid contradictions.</li>
       <li><strong>Check CLAUDE.md and AGENTS.md.</strong> If you use Claude Code alongside Cursor, make sure your context files don't contradict your Cursor rules.</li>
     </ol>
 

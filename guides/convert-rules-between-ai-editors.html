@@ -66,29 +66,31 @@
       <li><strong>Cursor:</strong> <code>.mdc</code> files with YAML frontmatter in <code>.cursor/rules/</code></li>
       <li><strong>Cursor (legacy):</strong> <code>.cursorrules</code> single file</li>
       <li><strong>Claude Code:</strong> <code>CLAUDE.md</code> in project root</li>
-      <li><strong>Windsurf:</strong> <code>.windsurfrules</code> or <code>.windsurf/rules/</code></li>
-      <li><strong>AGENTS.md:</strong> Multi-agent format (Pro feature)</li>
+      <li><strong>AGENTS.md:</strong> Multi-agent instructions</li>
+      <li><strong>Windsurf:</strong> <code>.windsurfrules</code></li>
+      <li><strong>GitHub Copilot:</strong> <code>.github/copilot-instructions.md</code></li>
     </ul>
 
     <h2>Running the command</h2>
     <p>The tool auto-detects your source format and prompts you to choose a target:</p>
     <pre><code>npx rule-porter</code></pre>
     <p>Or specify source and target explicitly:</p>
-    <pre><code>npx rule-porter --from mdc --to claude</code></pre>
+    <pre><code>npx rule-porter --from cursor --to claude-md</code></pre>
     <p>The converter reads your rules, translates them to the target format, and writes the output to the appropriate location for that editor.</p>
 
     <h2>Direction flags</h2>
     <p>Use <code>--from</code> and <code>--to</code> to control conversion direction:</p>
     <pre><code>npx rule-porter --from cursor --to windsurf
-npx rule-porter --from claude --to mdc
-npx rule-porter --from cursorrules --to mdc</code></pre>
+npx rule-porter --from claude-md --to cursor
+npx rule-porter --from cursorrules-legacy --to cursor</code></pre>
     <p>Supported values:</p>
     <ul>
-      <li><code>cursor</code> or <code>mdc</code> (same thing)</li>
-      <li><code>cursorrules</code> (legacy single-file format)</li>
-      <li><code>claude</code> (CLAUDE.md)</li>
-      <li><code>windsurf</code></li>
-      <li><code>agents</code> (AGENTS.md, Pro only)</li>
+      <li><code>cursor</code> — .cursor/rules/*.mdc files</li>
+      <li><code>cursorrules-legacy</code> — legacy single .cursorrules file</li>
+      <li><code>claude-md</code> — CLAUDE.md</li>
+      <li><code>agents-md</code> — AGENTS.md</li>
+      <li><code>windsurf</code> — .windsurfrules</li>
+      <li><code>copilot</code> — .github/copilot-instructions.md</li>
     </ul>
 
     <h2>What gets translated</h2>
@@ -112,19 +114,16 @@ globs: ["**/*.ts"]
     <h3>Multiple files to single file</h3>
     <p>When converting from <code>.mdc</code> (multiple files) to <code>CLAUDE.md</code> (single file), the tool merges all rules with section headers based on the original filenames.</p>
 
-    <h2>Pro features</h2>
-    <p>Converting from <code>AGENTS.md</code> to <code>.mdc</code> is a Pro feature. This lets you take multi-agent instructions and split them into per-file Cursor rules with appropriate globs.</p>
-    <p>The free version supports all other conversions, including:</p>
+    <h2>All conversions are free</h2>
+    <p>Every conversion direction is included for free, including:</p>
     <ul>
-      <li><code>.mdc</code> to <code>CLAUDE.md</code></li>
-      <li><code>CLAUDE.md</code> to <code>.mdc</code></li>
-      <li><code>.cursorrules</code> to <code>.mdc</code></li>
-      <li>Windsurf to/from Cursor</li>
+      <li><code>.mdc</code> ↔ <code>CLAUDE.md</code></li>
+      <li><code>.mdc</code> ↔ <code>AGENTS.md</code></li>
+      <li><code>.cursorrules</code> → <code>.mdc</code></li>
+      <li>Windsurf ↔ Cursor</li>
+      <li>Copilot ↔ Cursor</li>
     </ul>
-
-    <div class="callout">
-      <p><strong>Upgrade for AGENTS.md:</strong> The Pro version adds support for <code>AGENTS.md</code> to <code>.mdc</code> conversion. All other conversions are free.</p>
-    </div>
+    <p>Use <code>--dry-run</code> to preview the output before writing files.</p>
 
     <h2>Checking the output</h2>
     <p>After conversion, check the output manually. The tool handles structure but can't guarantee every rule makes sense in the target editor's context.</p>

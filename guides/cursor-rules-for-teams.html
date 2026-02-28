@@ -148,24 +148,21 @@ Log errors with request context.</code></pre>
     </ul>
 
     <h2>Comparing setups across the team</h2>
-    <p>The <code>team-sync</code> command (Pro feature) compares your local rules setup with what's in git. It shows:</p>
-    <ul>
-      <li>Rules you have locally that aren't committed</li>
-      <li>Rules in the repo that you haven't pulled</li>
-      <li>Differences between your version and the committed version</li>
-    </ul>
-    <p>Run it before pushing changes to make sure you're in sync:</p>
-    <pre><code>npx cursor-doctor team-sync</code></pre>
-    <p>This is a Pro feature. The basic workflow (commit to git, pull to sync) works without it.</p>
+    <p>The <code>team</code> commands (Pro feature) help keep everyone in sync. Export your rules as a shareable config, set a team baseline, and detect drift:</p>
+    <pre><code># Export rules to a shareable config file
+npx cursor-doctor team export
+
+# Set a baseline from a file or URL
+npx cursor-doctor team baseline ./team-rules.json
+
+# Check for drift from the baseline
+npx cursor-doctor team drift</code></pre>
+    <p>Team members can import the shared config with <code>npx cursor-doctor team import &lt;file-or-url&gt;</code>.</p>
+    <p>These are Pro features. The basic workflow (commit to git, pull to sync) works without them.</p>
 
     <h2>Personal overrides</h2>
     <p>Sometimes you want a personal rule that doesn't apply to the whole team. Put these in your global Cursor config, not in <code>.cursor/rules/</code>.</p>
-    <p>Global rules location:</p>
-    <ul>
-      <li><strong>macOS:</strong> <code>~/Library/Application Support/Cursor/User/globalStorage/.cursor/rules/</code></li>
-      <li><strong>Linux:</strong> <code>~/.config/Cursor/User/globalStorage/.cursor/rules/</code></li>
-      <li><strong>Windows:</strong> <code>%APPDATA%\Cursor\User\globalStorage\.cursor\rules\</code></li>
-    </ul>
+    <p>Cursor stores user-level settings in its app data directory. Check Cursor's documentation for the current global rules path on your OS, as it can change between versions.</p>
     <p>Global rules load in every project. Use them for personal preferences that don't affect the team.</p>
 
     <h2>Validating team rules</h2>

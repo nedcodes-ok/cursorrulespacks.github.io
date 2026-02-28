@@ -137,7 +137,7 @@ Extract custom hooks.</code></pre>
     <p>If your <code>.cursorrules</code> file had lots of small headings, you might end up with too many tiny <code>.mdc</code> files. Merge related rules back together. One rule per concern is good, one rule per sentence is too granular.</p>
 
     <h3>Old file still active</h3>
-    <p>Cursor ignores <code>.cursorrules</code> if <code>.cursor/rules/</code> exists, but your editor might still show the old file as active. Delete or rename it to avoid confusion.</p>
+    <p>If both <code>.cursorrules</code> and <code>.cursor/rules/</code> exist, Cursor loads both, and <code>.mdc</code> rules take precedence on conflicts. Delete the old file to avoid confusion and contradictory instructions.</p>
 
     <h2>Manual migration</h2>
     <p>If you prefer full control, you can migrate manually:</p>

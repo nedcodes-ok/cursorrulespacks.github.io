@@ -81,7 +81,7 @@
       <li><strong>Remove redundant rules.</strong> Run <code>npx cursor-doctor scan</code> to find duplicates. Two rules saying the same thing in slightly different words wastes tokens for zero benefit.</li>
       <li><strong>Keep rules short and specific.</strong> A 200-token rule that says "use try-catch in API routes with this exact pattern" beats a 1,000-token rule that explains error handling philosophy.</li>
       <li><strong>Add code examples, cut prose.</strong> An example is worth 50 tokens of explanation. Show the model what you want instead of describing it.</li>
-      <li><strong>Split oversized files.</strong> Any rule over 500 tokens should probably be two rules. Run <code>npx cursor-doctor fix</code> to auto-split oversized files.</li>
+      <li><strong>Split oversized files.</strong> Any rule over 500 tokens should probably be two rules. Run <code>npx cursor-doctor fix</code> (Pro) to auto-fix oversized rules, or split them manually.</li>
     </ol>
 
     <h2>The ideal setup</h2>

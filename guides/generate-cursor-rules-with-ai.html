@@ -102,12 +102,14 @@ npx rulegen-ai</code></pre>
 
     <h2>Customizing the output</h2>
     <p>The default model is <code>gemini-2.5-flash</code>. You can specify a different model if needed:</p>
-    <pre><code>npx rulegen-ai --model gemini-2.0-flash-exp</code></pre>
+    <pre><code>npx rulegen-ai --model gemini-2.5-pro</code></pre>
     <p>Other options:</p>
     <ul>
-      <li><strong>--path:</strong> Specify a directory to scan (default: current directory)</li>
-      <li><strong>--output:</strong> Write rules to a different directory (default: <code>.cursor/rules</code>)</li>
-      <li><strong>--max-files:</strong> Limit how many files to analyze (useful for large codebases)</li>
+      <li><strong>path (positional):</strong> Specify a directory to scan (default: current directory). Example: <code>npx rulegen-ai ./my-project</code></li>
+      <li><strong>--format:</strong> Output format. Options: <code>cursor</code> (default), <code>claude-md</code>, <code>agents-md</code>, <code>copilot</code>, <code>windsurf</code></li>
+      <li><strong>--max-files:</strong> Limit how many files to analyze (default: 50, useful for large codebases)</li>
+      <li><strong>--dry-run:</strong> Preview rules without writing files</li>
+      <li><strong>--verbose:</strong> Show which files are sent to Gemini</li>
     </ul>
 
     <h2>When to use it vs writing manually</h2>

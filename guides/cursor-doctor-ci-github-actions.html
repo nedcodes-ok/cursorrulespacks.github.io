@@ -73,11 +73,10 @@
     <pre><code>npx cursor-doctor check</code></pre>
     <p>Exit codes:</p>
     <ul>
-      <li><strong>0:</strong> All rules valid</li>
-      <li><strong>1:</strong> Warnings found (vague descriptions, missing globs)</li>
-      <li><strong>2:</strong> Errors found (broken frontmatter, invalid YAML)</li>
+      <li><strong>0:</strong> Setup is healthy (no issues found)</li>
+      <li><strong>1:</strong> Issues found (warnings or errors)</li>
     </ul>
-    <p>In CI, you can fail the build on errors (exit code 2) while allowing warnings (exit code 1) to pass.</p>
+    <p>Any issue causes the build to fail, which is what you want in CI. If something is wrong with your rules, you'll know before merging.</p>
 
     <h2>GitHub Actions workflow</h2>
     <p>Add this workflow to <code>.github/workflows/lint-cursor-rules.yml</code> to check rules on every push:</p>
@@ -107,38 +106,30 @@ jobs:
       <p><strong>Tip:</strong> Add <code>paths</code> to only run the workflow when rules files change. This saves CI minutes.</p>
     </div>
 
-    <h2>Allowing warnings, failing on errors</h2>
-    <p>By default, the workflow above fails on both warnings and errors because <code>npx cursor-doctor check</code> exits with code 1 for warnings. To allow warnings but fail on errors, check the exit code explicitly:</p>
-    <pre><code>- name: Check Cursor rules
-  run: |
-    npx cursor-doctor check
-    EXIT_CODE=$?
-    if [ $EXIT_CODE -eq 2 ]; then
-      echo "Errors found, failing build"
-      exit 1
-    elif [ $EXIT_CODE -eq 1 ]; then
-      echo "Warnings found, passing with notice"
-      exit 0
-    fi</code></pre>
-    <p>This allows warnings to pass while still blocking merges that introduce broken frontmatter.</p>
+    <h2>Using lint for more detail</h2>
+    <p>The <code>check</code> command gives a pass/fail health grade. For a detailed breakdown of every issue in every file, use <code>lint</code> instead:</p>
+    <pre><code>- name: Lint Cursor rules
+  run: npx cursor-doctor lint</code></pre>
+    <p>The <code>lint</code> command exits with code 1 if any errors are found, 0 otherwise. It shows each issue with file path, severity, and a hint for fixing it.</p>
 
     <h2>What the check command catches</h2>
     <p>The linter validates frontmatter structure, glob syntax, and rule quality:</p>
 
-    <h3>Frontmatter errors (exit code 2)</h3>
+    <h3>Errors</h3>
     <ul>
-      <li>Missing or malformed YAML</li>
-      <li>Missing required <code>description</code> field</li>
-      <li>Invalid <code>alwaysApply</code> value (must be boolean)</li>
-      <li>Invalid glob syntax (unclosed brackets, invalid patterns)</li>
+      <li>Missing or malformed YAML frontmatter</li>
+      <li>Rules that will never load (<code>alwaysApply: false</code> with no globs)</li>
+      <li>Empty rule bodies (frontmatter but no instructions)</li>
+      <li>Conflicting instructions within a rule</li>
     </ul>
 
-    <h3>Quality warnings (exit code 1)</h3>
+    <h3>Warnings</h3>
     <ul>
-      <li>Vague descriptions ("general rules", "coding standards")</li>
-      <li>Rules with no globs and <code>alwaysApply: false</code> (won't auto-load)</li>
-      <li>Overly broad globs (<code>**/*</code> without specific extensions)</li>
-      <li>Empty rule bodies</li>
+      <li>Missing or empty description</li>
+      <li>Vague instructions ("write clean code", "follow best practices")</li>
+      <li>No code examples in long rules</li>
+      <li>Overly broad or invalid glob patterns</li>
+      <li>Unknown frontmatter keys</li>
     </ul>
 
     <h2>Running locally before committing</h2>
