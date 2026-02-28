@@ -1,224 +1,127 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rule Playground — Check your Cursor rules instantly | nedcodes</title>
-  <meta name="description" content="Paste a .mdc rule file and get instant feedback. Find broken frontmatter, vague instructions, missing fields, and prompt engineering issues.">
-  <meta property="og:title" content="Rule Playground — Check your Cursor rules instantly">
-  <meta property="og:description" content="Paste a .mdc rule and get instant lint feedback. No install needed.">
-  <meta property="og:image" content="https://nedcodes.dev/images/og-card.png">
-  <meta property="og:url" content="https://nedcodes.dev/playground">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="theme-color" content="#0a0a0a">
-  <link rel="canonical" href="https://nedcodes.dev/playground">
-  <link rel="icon" href="/images/favicon.png" type="image/png">
-  <link rel="stylesheet" href="/styles.css">
-  <style>
-    .playground { padding: 100px 0 80px; }
-    .playground h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
-    .playground .sub { color: var(--text-muted); margin-bottom: 32px; font-size: 16px; }
-    .playground-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-    .editor-pane, .results-pane { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-    .pane-header { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; }
-    .pane-header .file-hint { font-weight: 400; font-size: 12px; }
-    #editor { width: 100%; min-height: 400px; background: transparent; border: none; color: var(--text); font-family: 'SF Mono', 'Fira Code', Consolas, monospace; font-size: 14px; line-height: 1.6; padding: 16px; resize: vertical; outline: none; }
-    .results-body { padding: 16px; min-height: 400px; overflow-y: auto; }
-    .result-item { padding: 10px 12px; border-radius: 6px; margin-bottom: 8px; font-size: 13px; line-height: 1.5; }
-    .result-error { background: rgba(239, 68, 68, 0.1); border-left: 3px solid #ef4444; }
-    .result-warning { background: rgba(245, 158, 11, 0.1); border-left: 3px solid #f59e0b; }
-    .result-info { background: rgba(59, 130, 246, 0.1); border-left: 3px solid #3b82f6; }
-    .result-ok { background: rgba(34, 197, 94, 0.1); border-left: 3px solid #22c55e; }
-    .result-severity { font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; margin-right: 8px; }
-    .result-error .result-severity { color: #ef4444; }
-    .result-warning .result-severity { color: #f59e0b; }
-    .result-info .result-severity { color: #3b82f6; }
-    .result-ok .result-severity { color: #22c55e; }
-    .result-hint { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
-    .result-line { color: var(--text-muted); font-size: 12px; }
-    .summary { padding: 12px 16px; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-muted); display: flex; gap: 16px; }
-    .summary .count { font-weight: 600; }
-    .summary .errors { color: #ef4444; }
-    .summary .warnings { color: #f59e0b; }
-    .summary .clean { color: #22c55e; }
-    .examples { margin-top: 24px; }
-    .examples h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
-    .example-btns { display: flex; gap: 8px; flex-wrap: wrap; }
-    .example-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; color: var(--text-muted); font-size: 13px; cursor: pointer; transition: all 0.15s; }
-    .example-btn:hover { border-color: var(--accent); color: var(--text); }
-    .cta-bar { margin-top: 32px; padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
-    .cta-bar p { color: var(--text-muted); font-size: 14px; margin: 0; }
-    .cta-bar .code-block { font-size: 13px; }
-    @media (max-width: 768px) {
-      .playground-grid { grid-template-columns: 1fr; }
-      .playground { padding: 80px 0 60px; }
-    }
-  </style>
-</head>
-<body>
-  <nav class="nav">
-    <div class="nav-inner">
-      <a href="/" class="nav-logo">nedcodes</a>
-      <div class="nav-links">
-        <a href="/#tools">Tools</a>
-        <a href="/guides/">Guides</a>
-        <a href="/playground">Playground</a>
-        <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
-      </div>
-    </div>
-  </nav>
+#!/usr/bin/env node
+/**
+ * sync-playground.js
+ * Extracts lint rules, patterns, and thresholds from cursor-doctor/src/index.js
+ * and regenerates the <script> section in playground.html.
+ *
+ * Run: node scripts/sync-playground.js
+ * Requires: ../cursor-doctor/src/index.js exists
+ */
 
-  <main class="playground">
-    <div class="container">
-      <h1>Rule Playground</h1>
-      <p class="sub">Paste a .mdc rule file and get instant feedback. No install needed.</p>
+const fs = require('fs');
+const path = require('path');
 
-      <div class="playground-grid">
-        <div class="editor-pane">
-          <div class="pane-header">
-            <span>Input</span>
-            <span class="file-hint">.mdc format</span>
-          </div>
-          <textarea id="editor" spellcheck="false" placeholder="Paste your .mdc rule here...
+const DOCTOR_SRC = path.resolve(__dirname, '../../cursor-doctor/src/index.js');
+const PLAYGROUND = path.resolve(__dirname, '../playground.html');
 
-Example:
----
-description: TypeScript conventions
-alwaysApply: true
----
-Use strict TypeScript. Prefer interfaces over types."></textarea>
-        </div>
-        <div class="results-pane">
-          <div class="pane-header">
-            <span>Results</span>
-            <span id="result-count" class="file-hint"></span>
-          </div>
-          <div class="results-body" id="results">
-            <div class="result-item result-info">
-              <span class="result-severity">tip</span>
-              Paste a rule on the left to see diagnostics here.
-            </div>
-          </div>
-          <div class="summary" id="summary" style="display:none;"></div>
-        </div>
-      </div>
+if (!fs.existsSync(DOCTOR_SRC)) {
+  console.error('ERROR: cursor-doctor source not found at', DOCTOR_SRC);
+  process.exit(1);
+}
 
-      <div class="examples">
-        <h3>Try an example</h3>
-        <div class="example-btns">
-          <button class="example-btn" onclick="loadExample('broken')">Broken frontmatter</button>
-          <button class="example-btn" onclick="loadExample('vague')">Vague rules</button>
-          <button class="example-btn" onclick="loadExample('conflict')">Self-conflicting</button>
-          <button class="example-btn" onclick="loadExample('good')">Well-written rule</button>
-          <button class="example-btn" onclick="loadExample('dead')">Dead rule</button>
-          <button class="example-btn" onclick="loadExample('bloated')">Bloated rule</button>
-        </div>
-      </div>
+const src = fs.readFileSync(DOCTOR_SRC, 'utf-8');
 
-      <div class="cta-bar">
-        <p>Want to scan your entire project? Run the full CLI with 60+ checks, conflict detection, and auto-fix.</p>
-        <div class="code-block">
-          <code>npx cursor-doctor scan</code>
-          <button class="copy-btn" onclick="copyCommand(this)" data-cmd="npx cursor-doctor scan" aria-label="Copy">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          </button>
-        </div>
-      </div>
-    </div>
-  </main>
+// --- Extract constants from index.js ---
 
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-inner">
-        <span class="footer-brand">nedcodes</span>
-        <div class="footer-links">
-          <a href="mailto:hello@nedcodes.dev">hello@nedcodes.dev</a>
-          <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
-          <a href="https://dev.to/nedcodes" target="_blank" rel="noopener">Blog</a>
-          <a href="https://nedcodes.gumroad.com" target="_blank" rel="noopener">Store</a>
-        </div>
-      </div>
-    </div>
-  </footer>
+function extractArray(source, varName) {
+  // Match: const VARNAME = [\n  'item',\n  ...\n];
+  const re = new RegExp(`(?:const|var)\\s+${varName}\\s*=\\s*\\[([\\s\\S]*?)\\];`);
+  const m = source.match(re);
+  if (!m) return null;
+  const items = [];
+  const itemRe = /['"]([^'"]+)['"]/g;
+  let im;
+  while ((im = itemRe.exec(m[1]))) items.push(im[1]);
+  return items;
+}
 
-  <script>
+function extractConflictPairs(source) {
+  // Match conflict pair objects: { a: '...', b: '...', subject: '...' }
+  const pairs = [];
+  const re = /\{\s*a:\s*'([^']+)',\s*b:\s*'([^']+)',\s*subject:\s*'([^']+)'\s*\}/g;
+  let m;
+  while ((m = re.exec(source))) {
+    pairs.push({ a: m[1], b: m[2], subject: m[3] });
+  }
+  return pairs;
+}
+
+function extractValidKeys(source) {
+  const m = source.match(/const\s+validKeys\s*=\s*\[([^\]]+)\]/);
+  if (!m) return ['description', 'globs', 'alwaysApply'];
+  const keys = [];
+  const re = /['"]([^'"]+)['"]/g;
+  let km;
+  while ((km = re.exec(m[1]))) keys.push(km[1]);
+  return keys;
+}
+
+function extractVagueQualifiers(source) {
+  // Extract the "after" context words from findVagueRules
+  const qualifiers = [];
+  const re = /after\.startsWith\('(\w+ )'\)/g;
+  let m;
+  while ((m = re.exec(source))) qualifiers.push(m[1].trim());
+  return [...new Set(qualifiers)];
+}
+
+function extractImperativeVerbs(source) {
+  // Extract from the imperativeVerbs regex
+  const m = source.match(/imperativeVerbs\s*=\s*\/\\b\(([^)]+)\)\\b/);
+  if (!m) return null;
+  return m[1].split('|');
+}
+
+// --- Extract values ---
+
+const vaguePatterns = extractArray(src, 'VAGUE_PATTERNS');
+const conflictPairs = extractConflictPairs(src);
+const validKeys = extractValidKeys(src);
+const qualifiers = extractVagueQualifiers(src);
+const imperativeVerbs = extractImperativeVerbs(src);
+
+if (!vaguePatterns) {
+  console.error('ERROR: Could not extract VAGUE_PATTERNS from index.js');
+  process.exit(1);
+}
+
+console.log(`Extracted from cursor-doctor/src/index.js:`);
+console.log(`  VAGUE_PATTERNS: ${vaguePatterns.length} patterns`);
+console.log(`  Conflict pairs: ${conflictPairs.length}`);
+console.log(`  Valid keys: ${validKeys.join(', ')}`);
+console.log(`  Vague qualifiers: ${qualifiers.join(', ')}`);
+console.log(`  Imperative verbs: ${imperativeVerbs ? imperativeVerbs.length : 'not found'}`);
+
+// --- Generate playground script ---
+
+function generateScript() {
+  return `  <script>
   // AUTO-GENERATED by scripts/sync-playground.js — do not edit manually
   // Source: cursor-doctor/src/index.js
-  // Last synced: 2026-02-28
+  // Last synced: ${new Date().toISOString().split('T')[0]}
 
-  var VAGUE_PATTERNS = [
-      "write clean code",
-      "follow best practices",
-      "be consistent",
-      "write maintainable code",
-      "handle errors properly",
-      "use proper naming",
-      "keep it simple",
-      "write readable code",
-      "follow conventions",
-      "use good patterns",
-      "write efficient code",
-      "be careful",
-      "think before coding",
-      "write good tests",
-      "follow solid principles",
-      "use common sense",
-      "write quality code",
-      "follow the style guide",
-      "be thorough",
-      "write robust code",
-      "use good naming",
-      "be helpful",
-      "use appropriate patterns",
-      "be concise"
-  ];
+  var VAGUE_PATTERNS = ${JSON.stringify(vaguePatterns, null, 4).replace(/\n/g, '\n  ')};
 
-  var CONFLICT_PAIRS = [
-      {
-          "a": "always use semicolons",
-          "b": "no semicolons",
-          "subject": "semicolons"
-      },
-      {
-          "a": "use single quotes",
-          "b": "use double quotes",
-          "subject": "quotes"
-      },
-      {
-          "a": "prefer const",
-          "b": "prefer let",
-          "subject": "const vs let"
-      },
-      {
-          "a": "use async/await",
-          "b": "use promises",
-          "subject": "async patterns"
-      },
-      {
-          "a": "use function",
-          "b": "use arrow function",
-          "subject": "function syntax"
-      }
-  ];
+  var CONFLICT_PAIRS = ${JSON.stringify(conflictPairs, null, 4).replace(/\n/g, '\n  ')};
 
-  var VALID_KEYS = ["description","globs","alwaysApply"];
+  var VALID_KEYS = ${JSON.stringify(validKeys)};
 
-  var VAGUE_QUALIFIERS = ["with","for","in","by","using","and"];
+  var VAGUE_QUALIFIERS = ${JSON.stringify(qualifiers)};
 
-  var IMPERATIVE_VERBS = /\\b(use|write|create|add|remove|ensure|check|validate|follow|apply|implement|wrap|handle|return|throw|test|run|call|import|export|set|define|configure|avoid|prefer|keep|split|merge|move|rename|update|delete|include|exclude|enable|disable)\\b/i;
+  ${imperativeVerbs ? `var IMPERATIVE_VERBS = /\\\\b(${imperativeVerbs.join('|')})\\\\b/i;` : ''}
 
   function parseFrontmatter(content) {
-    var match = content.match(/^---\n([\s\S]*?)\n---/);
+    var match = content.match(/^---\\n([\\s\\S]*?)\\n---/);
     if (!match) return { found: false, data: null, error: null };
     try {
       var data = {};
-      var lines = match[1].split('\n');
+      var lines = match[1].split('\\n');
       var currentKey = null, currentList = null;
       for (var i = 0; i < lines.length; i++) {
         var line = lines[i];
-        if (line.match(/^\s+-\s+/)) {
+        if (line.match(/^\\s+-\\s+/)) {
           if (currentKey && currentList) {
-            var val = line.replace(/^\s+-\s+/, '').trim();
+            var val = line.replace(/^\\s+-\\s+/, '').trim();
             if (val.startsWith('"') && val.endsWith('"')) val = val.slice(1, -1);
             else if (val.startsWith("'") && val.endsWith("'")) val = val.slice(1, -1);
             currentList.push(val);
@@ -226,7 +129,7 @@ Use strict TypeScript. Prefer interfaces over types."></textarea>
           continue;
         }
         if (currentKey && currentList) { data[currentKey] = currentList; currentKey = null; currentList = null; }
-        if (line.match(/^\s+\S/) && !line.match(/^\s+-/)) {
+        if (line.match(/^\\s+\\S/) && !line.match(/^\\s+-/)) {
           var prev = i > 0 ? lines[i-1] : null;
           if (prev && !prev.endsWith(':')) return { found: true, data: null, error: 'Invalid YAML indentation' };
         }
@@ -246,7 +149,7 @@ Use strict TypeScript. Prefer interfaces over types."></textarea>
   }
 
   function getBody(content) {
-    var m = content.match(/^---\n[\s\S]*?\n---\n?/);
+    var m = content.match(/^---\\n[\\s\\S]*?\\n---\\n?/);
     return m ? content.slice(m[0].length) : content;
   }
 
@@ -284,7 +187,7 @@ Use strict TypeScript. Prefer interfaces over types."></textarea>
           issues.push({ s:'warning', m:'Unknown frontmatter key: '+key, h:'Valid keys: '+VALID_KEYS.join(', ') });
       }
 
-      if (fm.data.description && /[*_`#\[\]]/.test(fm.data.description))
+      if (fm.data.description && /[*_\`#\\[\\]]/.test(fm.data.description))
         issues.push({ s:'warning', m:'Description contains markdown formatting', h:'Descriptions should be plain text. Save formatting for the rule body.' });
 
       if (fm.data.globs && typeof fm.data.globs === 'string' && fm.data.globs.indexOf(',') !== -1 && !fm.data.globs.trim().startsWith('['))
@@ -303,14 +206,14 @@ Use strict TypeScript. Prefer interfaces over types."></textarea>
     else if (body.length > 2000)
       issues.push({ s:'warning', m:'Rule body is very long (>2000 chars)', h:'Consider splitting into focused rules' });
 
-    if (body.length > 200 && !/```/.test(body) && !/\n {4,}\S/.test(body))
+    if (body.length > 200 && !/\`\`\`/.test(body) && !/\\n {4,}\\S/.test(body))
       issues.push({ s:'warning', m:'No code examples', h:'Rules with examples get followed more reliably' });
 
     // --- Vague rules (context-aware) ---
-    var lines = content.split('\n');
+    var lines = content.split('\\n');
     for (var vi = 0; vi < lines.length; vi++) {
       var ll = lines[vi].toLowerCase().trim();
-      if (ll.startsWith('#') || ll.startsWith('```') || ll.length === 0) continue;
+      if (ll.startsWith('#') || ll.startsWith('\`\`\`') || ll.length === 0) continue;
       for (var pi = 0; pi < VAGUE_PATTERNS.length; pi++) {
         var idx = ll.indexOf(VAGUE_PATTERNS[pi]);
         if (idx === -1) continue;
@@ -326,23 +229,23 @@ Use strict TypeScript. Prefer interfaces over types."></textarea>
     }
 
     // --- Prompt engineering checks ---
-    if (/\b(try to|maybe|consider|perhaps|possibly|might want to)\b/i.test(body))
+    if (/\\b(try to|maybe|consider|perhaps|possibly|might want to)\\b/i.test(body))
       issues.push({ s:'warning', m:'Weak language detected (try to/maybe/consider)', h:'Use imperative mood: "Do X" instead of "try to do X"' });
 
-    if (/\b(please|thank you|thanks)\b/i.test(body))
+    if (/\\b(please|thank you|thanks)\\b/i.test(body))
       issues.push({ s:'info', m:'Rule uses please/thank you', h:'Politeness wastes tokens. Be direct.' });
 
-    if (/\b(I want|I need|I\'d like|my preference)\b/i.test(body))
+    if (/\\b(I want|I need|I\\'d like|my preference)\\b/i.test(body))
       issues.push({ s:'info', m:'Rule uses first person', h:'Use direct commands: "Use X" instead of "I want you to use X"' });
 
     if (body.length > 100 && !IMPERATIVE_VERBS.test(body))
       issues.push({ s:'warning', m:'No clear actionable instructions', h:'Use imperative verbs: use, write, create, ensure, etc.' });
 
     // --- Negations without alternatives ---
-    var negationMatches = body.match(/\b(don't|do not|never|avoid)\s+(?:use|do|write)\s+\w+/gi);
+    var negationMatches = body.match(/\\b(don't|do not|never|avoid)\\s+(?:use|do|write)\\s+\\w+/gi);
     if (negationMatches && negationMatches.length > 0) {
-      if (!/instead|rather|prefer|use \w+ (?:rather|instead)/.test(body.toLowerCase()))
-        issues.push({ s:'warning', m:'Rule uses negations without alternatives', h:"Instead of \"don't use X\", say \"use Y instead of X\"" });
+      if (!/instead|rather|prefer|use \\w+ (?:rather|instead)/.test(body.toLowerCase()))
+        issues.push({ s:'warning', m:'Rule uses negations without alternatives', h:"Instead of \\"don't use X\\", say \\"use Y instead of X\\"" });
     }
 
     // --- Self-conflict check ---
@@ -353,28 +256,28 @@ Use strict TypeScript. Prefer interfaces over types."></textarea>
     }
 
     // --- Structural checks ---
-    if (/\n\n\n\n/.test(body))
+    if (/\\n\\n\\n\\n/.test(body))
       issues.push({ s:'info', m:'Excessive blank lines (>3 consecutive)', h:'Excessive whitespace wastes tokens' });
 
-    if (/\b(TODO|FIXME|HACK|XXX)\b/.test(body))
+    if (/\\b(TODO|FIXME|HACK|XXX)\\b/.test(body))
       issues.push({ s:'warning', m:'Contains TODO/FIXME/HACK comments', h:'Unfinished rules confuse the model. Finish or remove.' });
 
     if (fm.data && fm.data.description && typeof fm.data.description === 'string' && fm.data.description.trim().length > 0 && body.trim().startsWith(fm.data.description))
       issues.push({ s:'warning', m:'Body starts with description repeated', h:'Redundant content wastes tokens' });
 
     // --- XML/HTML tags ---
-    if (/<[^>]+>/.test(body) && !/```/.test(body)) {
-      var xmlTags = body.match(/<\w+[^>]*>/g);
+    if (/<[^>]+>/.test(body) && !/\`\`\`/.test(body)) {
+      var xmlTags = body.match(/<\\w+[^>]*>/g);
       if (xmlTags && xmlTags.length > 0)
         issues.push({ s:'warning', m:'Rule body contains XML/HTML tags', h:"Cursor doesn't process XML/HTML in rules. Use markdown or plain text." });
     }
 
     // --- Broken markdown links ---
-    if (/\]\[/.test(body) || /\[[^\]]*\]\([^)]*$/.test(body))
+    if (/\\]\\[/.test(body) || /\\[[^\\]]*\\]\\([^)]*$/.test(body))
       issues.push({ s:'warning', m:'Rule body has broken markdown links', h:'Fix link syntax: [text](url)' });
 
     // --- Inconsistent heading levels ---
-    var headings = body.match(/^#{1,6}\s+.+/gm);
+    var headings = body.match(/^#{1,6}\\s+.+/gm);
     if (headings && headings.length >= 2) {
       var levels = headings.map(function(h) { return h.match(/^#+/)[0].length; });
       var hasSkip = false;
@@ -386,20 +289,20 @@ Use strict TypeScript. Prefer interfaces over types."></textarea>
 
     // --- Body is just a URL ---
     var bodyTrimmed = body.trim();
-    if (/^https?:\/\//.test(bodyTrimmed)) {
-      var bodyLines = bodyTrimmed.split('\n').filter(function(l) { return l.trim().length > 0; });
-      var nonUrlLines = bodyLines.filter(function(l) { return !/^https?:\/\//.test(l.trim()); });
+    if (/^https?:\\/\\//.test(bodyTrimmed)) {
+      var bodyLines = bodyTrimmed.split('\\n').filter(function(l) { return l.trim().length > 0; });
+      var nonUrlLines = bodyLines.filter(function(l) { return !/^https?:\\/\\//.test(l.trim()); });
       if (nonUrlLines.length < 2)
         issues.push({ s:'warning', m:'Rule body appears to be just a URL', h:'Cursor cannot follow URLs. Put the actual instructions in the rule body.' });
     }
 
     // --- Mixed concerns ---
     var concernKeywords = {
-      testing: /\b(test|spec|jest|mocha|vitest|cypress|playwright)\b/i,
-      styling: /\b(css|style|styled|tailwind|emotion|sass|less)\b/i,
-      naming: /\b(naming|name|identifier|variable name|function name)\b/i,
-      types: /\b(type|interface|generic|typescript|type safety)\b/i,
-      architecture: /\b(architecture|structure|organization|folder|directory)\b/i
+      testing: /\\b(test|spec|jest|mocha|vitest|cypress|playwright)\\b/i,
+      styling: /\\b(css|style|styled|tailwind|emotion|sass|less)\\b/i,
+      naming: /\\b(naming|name|identifier|variable name|function name)\\b/i,
+      types: /\\b(type|interface|generic|typescript|type safety)\\b/i,
+      architecture: /\\b(architecture|structure|organization|folder|directory)\\b/i
     };
     var matchedConcerns = [];
     for (var ck in concernKeywords) {
@@ -409,9 +312,9 @@ Use strict TypeScript. Prefer interfaces over types."></textarea>
       issues.push({ s:'warning', m:'Rule mixes multiple concerns: '+matchedConcerns.join(', '), h:'Rules that cover too many topics are harder for the AI to apply. Split into focused rules.' });
 
     // --- Numbered lists where order doesn't matter ---
-    var numberedLists = body.match(/\n\d+\.\s+/g);
+    var numberedLists = body.match(/\\n\\d+\\.\\s+/g);
     if (numberedLists && numberedLists.length >= 5) {
-      if (!/\b(first|second|third|then|next|finally|after|before)\b/i.test(body))
+      if (!/\\b(first|second|third|then|next|finally|after|before)\\b/i.test(body))
         issues.push({ s:'info', m:'Numbered lists where order may not matter', h:'Bullet lists are more flexible when order is unimportant.' });
     }
 
@@ -428,7 +331,7 @@ Use strict TypeScript. Prefer interfaces over types."></textarea>
         var glob = globs[gi];
         if (glob === '*' || glob === '**')
           issues.push({ s:'warning', m:'Overly broad glob pattern', h:'This matches everything. Use more specific patterns or alwaysApply: true.' });
-        if (glob.indexOf('\\') !== -1)
+        if (glob.indexOf('\\\\') !== -1)
           issues.push({ s:'warning', m:'Glob uses Windows backslashes: '+glob, h:'Use forward slashes for cross-platform compatibility.' });
         if (glob.endsWith('/'))
           issues.push({ s:'warning', m:'Glob has trailing slash: '+glob, h:'Trailing slashes are not valid glob syntax.' });
@@ -452,7 +355,7 @@ Use strict TypeScript. Prefer interfaces over types."></textarea>
     if (issues.length === 0) {
       el.innerHTML = '<div class="result-item result-ok"><span class="result-severity">pass</span> No issues found. This rule looks good.</div>';
       sum.style.display = 'flex';
-      sum.innerHTML = '<span class="clean count">\u2713 Clean</span>';
+      sum.innerHTML = '<span class="clean count">\\u2713 Clean</span>';
       cnt.textContent = '0 issues';
       return;
     }
@@ -484,12 +387,12 @@ Use strict TypeScript. Prefer interfaces over types."></textarea>
   }
 
   var EXAMPLES = {
-    broken: '---\ndescription\nalwaysApply true\n---\nUse TypeScript strict mode.',
-    vague: '---\ndescription: General coding rules\nalwaysApply: true\n---\nWrite clean code.\nFollow best practices.\nBe consistent.\nHandle errors properly.',
-    conflict: '---\ndescription: Style rules\nalwaysApply: true\n---\nAlways use semicolons at the end of every statement.\n\nAvoid semicolons. No semicolons in this project.',
-    good: '---\ndescription: TypeScript error handling in API routes\nglobs:\n  - "src/api/**/*.ts"\n  - "src/routes/**/*.ts"\n---\nWrap all route handlers in try-catch blocks.\n\nReturn structured error responses:\n\n```typescript\ncatch (error) {\n  return Response.json(\n    { error: error.message, code: "INTERNAL_ERROR" },\n    { status: 500 }\n  );\n}\n```\n\nNever expose stack traces in production responses.\nLog the full error with `console.error(error)` before returning.',
-    dead: '---\ndescription: Python formatting\nalwaysApply: false\n---\nUse black for formatting.\nLine length 88 characters.',
-    bloated: '---\ndescription: Everything about our codebase\nalwaysApply: true\n---\n' + Array(101).join('This rule covers everything.\n') + '\nPlease try to maybe follow these guidelines.\nI want you to be careful.\nTODO: finish this rule later.'
+    broken: '---\\ndescription\\nalwaysApply true\\n---\\nUse TypeScript strict mode.',
+    vague: '---\\ndescription: General coding rules\\nalwaysApply: true\\n---\\nWrite clean code.\\nFollow best practices.\\nBe consistent.\\nHandle errors properly.',
+    conflict: '---\\ndescription: Style rules\\nalwaysApply: true\\n---\\nAlways use semicolons at the end of every statement.\\n\\nAvoid semicolons. No semicolons in this project.',
+    good: '---\\ndescription: TypeScript error handling in API routes\\nglobs:\\n  - "src/api/**/*.ts"\\n  - "src/routes/**/*.ts"\\n---\\nWrap all route handlers in try-catch blocks.\\n\\nReturn structured error responses:\\n\\n\`\`\`typescript\\ncatch (error) {\\n  return Response.json(\\n    { error: error.message, code: "INTERNAL_ERROR" },\\n    { status: 500 }\\n  );\\n}\\n\`\`\`\\n\\nNever expose stack traces in production responses.\\nLog the full error with \`console.error(error)\` before returning.',
+    dead: '---\\ndescription: Python formatting\\nalwaysApply: false\\n---\\nUse black for formatting.\\nLine length 88 characters.',
+    bloated: '---\\ndescription: Everything about our codebase\\nalwaysApply: true\\n---\\n' + Array(101).join('This rule covers everything.\\n') + '\\nPlease try to maybe follow these guidelines.\\nI want you to be careful.\\nTODO: finish this rule later.'
   };
 
   function loadExample(name) {
@@ -517,6 +420,22 @@ Use strict TypeScript. Prefer interfaces over types."></textarea>
       setTimeout(function() { btn.classList.remove('copied'); }, 1500);
     });
   }
-  </script>
-</body>
-</html>
+  </script>`;
+}
+
+// --- Replace script in playground.html ---
+
+const html = fs.readFileSync(PLAYGROUND, 'utf-8');
+const scriptStart = html.indexOf('  <script>');
+const scriptEnd = html.indexOf('  </script>') + '  </script>'.length;
+
+if (scriptStart === -1 || scriptEnd === -1) {
+  console.error('ERROR: Could not find <script> block in playground.html');
+  process.exit(1);
+}
+
+const newHtml = html.slice(0, scriptStart) + generateScript() + html.slice(scriptEnd);
+fs.writeFileSync(PLAYGROUND, newHtml, 'utf-8');
+
+console.log('\n✓ playground.html updated successfully');
+console.log(`  Checks synced: vague patterns, conflict pairs, valid keys, prompt engineering, structural, glob checks`);
