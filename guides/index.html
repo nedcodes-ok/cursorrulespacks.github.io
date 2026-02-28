@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cursor AI Guides — nedcodes</title>
+  <meta name="description" content="Practical guides for getting the most out of Cursor AI rules. Fix conflicts, optimize token budgets, write rules that actually work.">
+  <meta property="og:title" content="Cursor AI Guides — nedcodes">
+  <meta property="og:description" content="Practical guides for Cursor AI rules. Fix conflicts, optimize tokens, write effective rules.">
+  <meta property="og:image" content="https://nedcodes.dev/images/og-card.png">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="canonical" href="https://nedcodes.dev/guides/">
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .guides { padding: 100px 0 80px; }
+    .guides h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .guides .sub { color: var(--text-muted); margin-bottom: 40px; font-size: 16px; }
+    .guide-list { display: grid; gap: 16px; }
+    .guide-link { display: block; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; transition: border-color 0.15s; text-decoration: none; }
+    .guide-link:hover { border-color: var(--accent); text-decoration: none; }
+    .guide-link h2 { font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .guide-link p { color: var(--text-muted); font-size: 14px; margin: 0; line-height: 1.5; }
+    .guide-link .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 4px; margin-bottom: 8px; }
+    .tag-fix { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+    .tag-optimize { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+    .tag-write { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">nedcodes</a>
+      <div class="nav-links">
+        <a href="/#tools">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/playground">Playground</a>
+        <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="guides">
+    <div class="container">
+      <h1>Guides</h1>
+      <p class="sub">Practical guides for getting the most out of your Cursor AI setup.</p>
+
+      <div class="guide-list">
+        <a href="/guides/fix-cursor-rule-conflicts" class="guide-link">
+          <span class="tag tag-fix">Fix</span>
+          <h2>How to fix Cursor rule conflicts</h2>
+          <p>When two rules say different things, Cursor picks one silently. Here's how to find and resolve conflicts before they waste your time.</p>
+        </a>
+
+        <a href="/guides/cursor-token-budget" class="guide-link">
+          <span class="tag tag-optimize">Optimize</span>
+          <h2>Cursor token budget: how many rules is too many?</h2>
+          <p>Every rule eats into your context window. Here's how to measure your token budget, find waste, and get more out of fewer tokens.</p>
+        </a>
+
+        <a href="/guides/write-cursor-rules-that-work" class="guide-link">
+          <span class="tag tag-write">Write</span>
+          <h2>How to write Cursor rules that actually work</h2>
+          <p>The difference between rules that get followed and rules that get ignored. Frontmatter, structure, examples, and prompt engineering.</p>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-brand">nedcodes</span>
+        <div class="footer-links">
+          <a href="mailto:hello@nedcodes.dev">hello@nedcodes.dev</a>
+          <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://dev.to/nedcodes" target="_blank" rel="noopener">Blog</a>
+          <a href="https://nedcodes.gumroad.com" target="_blank" rel="noopener">Store</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

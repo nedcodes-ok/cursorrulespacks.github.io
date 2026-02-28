@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to fix Cursor rule conflicts — nedcodes</title>
+  <meta name="description" content="When two Cursor rules contradict each other, Cursor picks one silently. Here's how to find and resolve rule conflicts.">
+  <meta property="og:title" content="How to fix Cursor rule conflicts">
+  <meta property="og:description" content="Find and resolve contradictions in your .mdc rules before they waste your time.">
+  <meta property="og:image" content="https://nedcodes.dev/images/og-card.png">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="canonical" href="https://nedcodes.dev/guides/fix-cursor-rule-conflicts">
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .article { padding: 100px 0 80px; max-width: 720px; margin: 0 auto; }
+    .article h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2; }
+    .article .meta { color: var(--text-muted); font-size: 14px; margin-bottom: 40px; }
+    .article h2 { font-size: 22px; font-weight: 600; margin: 40px 0 16px; letter-spacing: -0.01em; }
+    .article p { color: var(--text-muted); font-size: 16px; line-height: 1.7; margin-bottom: 16px; }
+    .article strong { color: var(--text); }
+    .article code { background: var(--surface); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; font-size: 14px; color: var(--green); }
+    .article pre { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow-x: auto; margin: 16px 0; }
+    .article pre code { border: none; padding: 0; background: none; font-size: 14px; line-height: 1.6; color: var(--text); }
+    .article ul, .article ol { color: var(--text-muted); font-size: 16px; line-height: 1.7; margin: 0 0 16px 24px; }
+    .article li { margin-bottom: 8px; }
+    .article .callout { background: var(--surface); border-left: 3px solid var(--accent); padding: 16px 20px; border-radius: 0 var(--radius) var(--radius) 0; margin: 24px 0; }
+    .article .callout p { margin: 0; }
+    .cta-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-top: 48px; }
+    .cta-box h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .cta-box p { margin-bottom: 16px; }
+    .back-link { display: inline-block; color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">nedcodes</a>
+      <div class="nav-links">
+        <a href="/#tools">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/playground">Playground</a>
+        <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="article container">
+    <a href="/guides/" class="back-link">← All guides</a>
+    <h1>How to fix Cursor rule conflicts</h1>
+    <p class="meta">When two rules say different things, Cursor picks one silently.</p>
+
+    <h2>What's a rule conflict?</h2>
+    <p>You have <code>typescript-style.mdc</code> that says "always use semicolons" and <code>prettier-config.mdc</code> that says "no semicolons." Both have <code>alwaysApply: true</code>. Both match your TypeScript files.</p>
+    <p>Cursor doesn't warn you. It picks one, seemingly at random, and you spend 20 minutes wondering why your code style keeps flipping.</p>
+
+    <h2>Where conflicts hide</h2>
+    <p><strong>Same-format conflicts</strong> are the obvious ones. Two <code>.mdc</code> files with contradictory instructions. These are easy to spot in small projects, impossible in large ones.</p>
+    <p><strong>Cross-format conflicts</strong> are sneakier. Your <code>.mdc</code> rules say one thing, your <code>CLAUDE.md</code> says another, and your legacy <code>.cursorrules</code> file (that you forgot existed) says a third. Cursor loads all of them.</p>
+    <p><strong>Glob overlap conflicts</strong> happen when two rules both match the same files but give different instructions. One rule targets <code>*.ts</code> and another targets <code>src/**/*.ts</code>. They both fire on the same file.</p>
+
+    <h2>How to find them</h2>
+    <p>Run cursor-doctor's scan to get a health check that flags potential conflicts:</p>
+    <pre><code>npx cursor-doctor scan</code></pre>
+    <p>For detailed conflict analysis across all formats, use the conflicts command:</p>
+    <pre><code>npx cursor-doctor conflicts</code></pre>
+    <p>This compares every rule pair, checks for glob overlaps, and reports contradictory directives like "always use X" vs "never use X."</p>
+
+    <h2>How to fix them</h2>
+    <ol>
+      <li><strong>Pick one source of truth per topic.</strong> If you have style rules, put them in one file. Don't split "use semicolons" and "use single quotes" across three files.</li>
+      <li><strong>Use globs to narrow scope.</strong> Instead of two <code>alwaysApply: true</code> rules fighting, make one apply to <code>src/**/*.ts</code> and the other to <code>tests/**/*.ts</code>.</li>
+      <li><strong>Delete your .cursorrules file.</strong> If you have both <code>.cursorrules</code> and <code>.cursor/rules/*.mdc</code>, run <code>npx cursor-doctor migrate</code> to convert and then delete the legacy file.</li>
+      <li><strong>Check CLAUDE.md and AGENTS.md.</strong> If you use Claude Code alongside Cursor, make sure your context files don't contradict your Cursor rules.</li>
+    </ol>
+
+    <div class="callout">
+      <p><strong>Rule of thumb:</strong> If you can't explain which file controls a given behavior, you have a conflict. Every instruction should have exactly one home.</p>
+    </div>
+
+    <h2>Prevent future conflicts</h2>
+    <p>Run <code>cursor-doctor scan</code> as a pre-commit hook or in CI. Add it to your GitHub Actions workflow:</p>
+    <pre><code>- uses: nedcodes-ok/cursor-doctor@v1</code></pre>
+    <p>This catches conflicts before they merge into your main branch.</p>
+
+    <div class="cta-box">
+      <h3>Scan your project now</h3>
+      <p>One command finds conflicts, broken frontmatter, token waste, and 60+ other issues.</p>
+      <div class="code-block">
+        <code>npx cursor-doctor scan</code>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-brand">nedcodes</span>
+        <div class="footer-links">
+          <a href="mailto:hello@nedcodes.dev">hello@nedcodes.dev</a>
+          <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://dev.to/nedcodes" target="_blank" rel="noopener">Blog</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

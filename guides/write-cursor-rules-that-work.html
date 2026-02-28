@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to write Cursor rules that actually work — nedcodes</title>
+  <meta name="description" content="The difference between Cursor rules that get followed and rules that get ignored. Frontmatter, structure, examples, and prompt engineering tips.">
+  <meta property="og:title" content="How to write Cursor rules that actually work">
+  <meta property="og:description" content="Frontmatter, structure, examples, and prompt engineering for rules that stick.">
+  <meta property="og:image" content="https://nedcodes.dev/images/og-card.png">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="canonical" href="https://nedcodes.dev/guides/write-cursor-rules-that-work">
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .article { padding: 100px 0 80px; max-width: 720px; margin: 0 auto; }
+    .article h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2; }
+    .article .meta { color: var(--text-muted); font-size: 14px; margin-bottom: 40px; }
+    .article h2 { font-size: 22px; font-weight: 600; margin: 40px 0 16px; letter-spacing: -0.01em; }
+    .article p { color: var(--text-muted); font-size: 16px; line-height: 1.7; margin-bottom: 16px; }
+    .article strong { color: var(--text); }
+    .article code { background: var(--surface); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; font-size: 14px; color: var(--green); }
+    .article pre { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow-x: auto; margin: 16px 0; }
+    .article pre code { border: none; padding: 0; background: none; font-size: 14px; line-height: 1.6; color: var(--text); }
+    .article ul, .article ol { color: var(--text-muted); font-size: 16px; line-height: 1.7; margin: 0 0 16px 24px; }
+    .article li { margin-bottom: 8px; }
+    .article .callout { background: var(--surface); border-left: 3px solid var(--accent); padding: 16px 20px; border-radius: 0 var(--radius) var(--radius) 0; margin: 24px 0; }
+    .article .callout p { margin: 0; }
+    .article .good-bad { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .article .gb-col { background: var(--surface); border-radius: var(--radius); padding: 16px; }
+    .article .gb-col h4 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+    .article .gb-bad h4 { color: #ef4444; }
+    .article .gb-good h4 { color: #22c55e; }
+    .cta-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-top: 48px; }
+    .cta-box h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .cta-box p { margin-bottom: 16px; }
+    .back-link { display: inline-block; color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+    @media (max-width: 600px) { .article .good-bad { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">nedcodes</a>
+      <div class="nav-links">
+        <a href="/#tools">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/playground">Playground</a>
+        <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="article container">
+    <a href="/guides/" class="back-link">← All guides</a>
+    <h1>How to write Cursor rules that actually work</h1>
+    <p class="meta">The difference between rules that get followed and rules that get ignored.</p>
+
+    <h2>Start with correct frontmatter</h2>
+    <p>Every <code>.mdc</code> file needs a YAML frontmatter block. Without it, Cursor may silently ignore the entire file.</p>
+    <pre><code>---
+description: TypeScript error handling for API routes
+globs:
+  - "src/api/**/*.ts"
+  - "src/routes/**/*.ts"
+---</code></pre>
+    <p>Three fields matter:</p>
+    <ul>
+      <li><strong>description</strong> (required): Tells Cursor when to apply this rule. Be specific. "TypeScript error handling for API routes" beats "error handling."</li>
+      <li><strong>alwaysApply</strong>: Set to <code>true</code> for rules that should fire on every request. Use sparingly.</li>
+      <li><strong>globs</strong>: File patterns that scope the rule. Rules with globs only load when you're editing matching files. This saves tokens.</li>
+    </ul>
+
+    <div class="callout">
+      <p><strong>Common mistake:</strong> Setting <code>alwaysApply: false</code> with no globs. This creates a rule that only fires when manually referenced by name. If that's not what you want, add globs or set <code>alwaysApply: true</code>.</p>
+    </div>
+
+    <h2>Be specific, not vague</h2>
+    <p>The model already knows how to "write clean code." Telling it to do so wastes tokens and changes nothing.</p>
+
+    <div class="good-bad">
+      <div class="gb-col gb-bad">
+        <h4>❌ Vague</h4>
+        <p style="font-size:14px;color:var(--text-muted);">Write clean code.<br>Follow best practices.<br>Handle errors properly.<br>Use good naming.</p>
+      </div>
+      <div class="gb-col gb-good">
+        <h4>✓ Specific</h4>
+        <p style="font-size:14px;color:var(--text-muted);">Wrap all route handlers in try-catch.<br>Return {error, code} on failure.<br>Prefix private methods with underscore.<br>Name booleans with is/has/should.</p>
+      </div>
+    </div>
+
+    <h2>Show, don't tell</h2>
+    <p>A code example is worth 50 tokens of explanation. The model follows patterns better than prose.</p>
+
+    <div class="good-bad">
+      <div class="gb-col gb-bad">
+        <h4>❌ Telling</h4>
+        <p style="font-size:14px;color:var(--text-muted);">When handling errors in API routes, make sure to catch all errors and return a structured JSON response with an error message and an appropriate HTTP status code.</p>
+      </div>
+      <div class="gb-col gb-good">
+        <h4>✓ Showing</h4>
+        <pre style="margin:0;border:none;padding:0;"><code style="font-size:13px;">catch (error) {
+  return Response.json(
+    { error: error.message,
+      code: "INTERNAL_ERROR" },
+    { status: 500 }
+  );
+}</code></pre>
+      </div>
+    </div>
+
+    <h2>Use imperative language</h2>
+    <p>Rules are commands, not suggestions. The model follows direct instructions better than hedged requests.</p>
+    <ul>
+      <li><strong>Don't:</strong> "You might want to consider using const instead of let"</li>
+      <li><strong>Do:</strong> "Use const for all variables that aren't reassigned"</li>
+      <li><strong>Don't:</strong> "Please try to avoid nested ternaries"</li>
+      <li><strong>Do:</strong> "Never nest ternary operators. Use if/else instead."</li>
+    </ul>
+    <p>Skip "please," "try to," "consider," and "maybe." These waste tokens and weaken the instruction.</p>
+
+    <h2>One concern per rule</h2>
+    <p>A rule that covers TypeScript naming, React component structure, AND testing patterns is too broad. The model handles focused rules better.</p>
+    <p>Split by concern:</p>
+    <ul>
+      <li><code>typescript-naming.mdc</code> — variable, function, and type naming conventions</li>
+      <li><code>react-components.mdc</code> — component structure, props, hooks</li>
+      <li><code>testing-patterns.mdc</code> — test structure, mocking, assertions</li>
+    </ul>
+
+    <h2>Say what to do, not just what to avoid</h2>
+    <p>"Don't use var" tells the model what's wrong but not what's right. Always provide the alternative.</p>
+
+    <div class="good-bad">
+      <div class="gb-col gb-bad">
+        <h4>❌ Negation only</h4>
+        <p style="font-size:14px;color:var(--text-muted);">Don't use var.<br>Don't use any.<br>Avoid nested callbacks.</p>
+      </div>
+      <div class="gb-col gb-good">
+        <h4>✓ With alternative</h4>
+        <p style="font-size:14px;color:var(--text-muted);">Use const instead of var. Use let only for reassignment.<br>Use specific types instead of any. Use unknown for truly unknown types.<br>Use async/await instead of nested callbacks.</p>
+      </div>
+    </div>
+
+    <h2>Validate before committing</h2>
+    <p>Run your rules through the linter to catch broken frontmatter, vague instructions, and other issues before they hit your project:</p>
+    <pre><code>npx cursor-doctor scan</code></pre>
+    <p>Or paste a single rule into the <a href="/playground">playground</a> for instant feedback.</p>
+
+    <div class="cta-box">
+      <h3>Try the playground</h3>
+      <p>Paste a rule and get instant feedback on frontmatter, structure, and prompt engineering.</p>
+      <a href="/playground" style="display:inline-block;background:var(--accent);color:white;padding:10px 24px;border-radius:var(--radius);font-weight:600;font-size:14px;text-decoration:none;">Open Playground →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-brand">nedcodes</span>
+        <div class="footer-links">
+          <a href="mailto:hello@nedcodes.dev">hello@nedcodes.dev</a>
+          <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://dev.to/nedcodes" target="_blank" rel="noopener">Blog</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

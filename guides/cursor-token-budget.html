@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cursor token budget: how many rules is too many? — nedcodes</title>
+  <meta name="description" content="Every Cursor rule eats context window tokens. Learn how to measure your token budget, find waste, and get better results with fewer tokens.">
+  <meta property="og:title" content="Cursor token budget: how many rules is too many?">
+  <meta property="og:description" content="Measure your rule token usage and stop wasting context window space.">
+  <meta property="og:image" content="https://nedcodes.dev/images/og-card.png">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="canonical" href="https://nedcodes.dev/guides/cursor-token-budget">
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .article { padding: 100px 0 80px; max-width: 720px; margin: 0 auto; }
+    .article h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2; }
+    .article .meta { color: var(--text-muted); font-size: 14px; margin-bottom: 40px; }
+    .article h2 { font-size: 22px; font-weight: 600; margin: 40px 0 16px; letter-spacing: -0.01em; }
+    .article p { color: var(--text-muted); font-size: 16px; line-height: 1.7; margin-bottom: 16px; }
+    .article strong { color: var(--text); }
+    .article code { background: var(--surface); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; font-size: 14px; color: var(--green); }
+    .article pre { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow-x: auto; margin: 16px 0; }
+    .article pre code { border: none; padding: 0; background: none; font-size: 14px; line-height: 1.6; color: var(--text); }
+    .article ul, .article ol { color: var(--text-muted); font-size: 16px; line-height: 1.7; margin: 0 0 16px 24px; }
+    .article li { margin-bottom: 8px; }
+    .article .callout { background: var(--surface); border-left: 3px solid var(--accent); padding: 16px 20px; border-radius: 0 var(--radius) var(--radius) 0; margin: 24px 0; }
+    .article .callout p { margin: 0; }
+    .cta-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-top: 48px; }
+    .cta-box h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .cta-box p { margin-bottom: 16px; }
+    .back-link { display: inline-block; color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+    .back-link:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">nedcodes</a>
+      <div class="nav-links">
+        <a href="/#tools">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/playground">Playground</a>
+        <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="article container">
+    <a href="/guides/" class="back-link">← All guides</a>
+    <h1>Cursor token budget: how many rules is too many?</h1>
+    <p class="meta">Every rule eats into your context window. Here's how to measure and optimize.</p>
+
+    <h2>The problem</h2>
+    <p>Cursor loads your rules into the context window alongside your code, your prompt, and the files it's editing. The context window is finite. Every token spent on rules is a token not spent on understanding your code.</p>
+    <p>If you have 20 rules with <code>alwaysApply: true</code>, all 20 load on every request. Even if you're editing a Python file and half your rules are about React.</p>
+
+    <h2>How to measure your token usage</h2>
+    <p>Run the stats command to see a breakdown:</p>
+    <pre><code>npx cursor-doctor stats</code></pre>
+    <p>This shows you each rule's estimated token count, which are always-loaded vs conditional, and the total budget your rules consume per request.</p>
+    <p>For a deeper analysis:</p>
+    <pre><code>npx cursor-doctor budget</code></pre>
+    <p>The budget command breaks down always-loaded tokens vs conditional tokens, flags oversized rules, and identifies waste.</p>
+
+    <h2>What "too many" actually looks like</h2>
+    <p>From our testing with 50 rules across real codebases:</p>
+    <ul>
+      <li><strong>Clean test files:</strong> 100% compliance at every rule count (1 to 50)</li>
+      <li><strong>Real codebases (~900 lines):</strong> 96-98% compliance at 50 rules. 1-2 rules silently ignored per run, random ones each time.</li>
+    </ul>
+    <p>So 50 rules works, but you're losing 2-4% reliability. The practical limit depends on how critical each rule is to you.</p>
+
+    <div class="callout">
+      <p><strong>The real issue isn't rule count. It's alwaysApply overuse.</strong> 50 well-scoped rules with globs perform better than 10 rules all set to alwaysApply, because scoped rules only load when relevant.</p>
+    </div>
+
+    <h2>How to cut token waste</h2>
+    <ol>
+      <li><strong>Use globs instead of alwaysApply.</strong> A React rule should target <code>*.tsx</code> and <code>*.jsx</code>, not load on every file. Only truly global rules (naming conventions, comment style) need <code>alwaysApply: true</code>.</li>
+      <li><strong>Remove redundant rules.</strong> Run <code>npx cursor-doctor scan</code> to find duplicates. Two rules saying the same thing in slightly different words wastes tokens for zero benefit.</li>
+      <li><strong>Keep rules short and specific.</strong> A 200-token rule that says "use try-catch in API routes with this exact pattern" beats a 1,000-token rule that explains error handling philosophy.</li>
+      <li><strong>Add code examples, cut prose.</strong> An example is worth 50 tokens of explanation. Show the model what you want instead of describing it.</li>
+      <li><strong>Split oversized files.</strong> Any rule over 500 tokens should probably be two rules. Run <code>npx cursor-doctor fix</code> to auto-split oversized files.</li>
+    </ol>
+
+    <h2>The ideal setup</h2>
+    <p>Most projects do well with:</p>
+    <ul>
+      <li><strong>3-5 global rules</strong> (<code>alwaysApply: true</code>): naming, comments, error format, commit style</li>
+      <li><strong>5-15 scoped rules</strong> (with globs): framework conventions, test patterns, API routes, component structure</li>
+      <li><strong>Total budget under 3,000 tokens</strong> always-loaded</li>
+    </ul>
+
+    <div class="cta-box">
+      <h3>Check your token budget</h3>
+      <p>See exactly how many tokens your rules consume and where the waste is.</p>
+      <div class="code-block">
+        <code>npx cursor-doctor budget</code>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-brand">nedcodes</span>
+        <div class="footer-links">
+          <a href="mailto:hello@nedcodes.dev">hello@nedcodes.dev</a>
+          <a href="https://github.com/nedcodes-ok" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://dev.to/nedcodes" target="_blank" rel="noopener">Blog</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

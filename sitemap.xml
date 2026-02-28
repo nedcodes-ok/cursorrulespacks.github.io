@@ -5,4 +5,29 @@
     <lastmod>2026-02-28</lastmod>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>https://nedcodes.dev/playground</loc>
+    <lastmod>2026-02-28</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://nedcodes.dev/guides/</loc>
+    <lastmod>2026-02-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nedcodes.dev/guides/fix-cursor-rule-conflicts</loc>
+    <lastmod>2026-02-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nedcodes.dev/guides/cursor-token-budget</loc>
+    <lastmod>2026-02-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nedcodes.dev/guides/write-cursor-rules-that-work</loc>
+    <lastmod>2026-02-28</lastmod>
+    <priority>0.8</priority>
+  </url>
 </urlset>
