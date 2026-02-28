@@ -79,14 +79,27 @@
             <span>Input</span>
             <span class="file-hint">.mdc format</span>
           </div>
-          <textarea id="editor" spellcheck="false" placeholder="Paste your .mdc rule here...
+          <textarea id="editor" spellcheck="false" placeholder="Paste your .mdc rule here...">---
+description: TypeScript error handling in API routes
+globs:
+  - "src/api/**/*.ts"
+  - "src/routes/**/*.ts"
+---
+Wrap all route handlers in try-catch blocks.
 
-Example:
----
-description: TypeScript conventions
-alwaysApply: true
----
-Use strict TypeScript. Prefer interfaces over types."></textarea>
+Return structured error responses:
+
+```typescript
+catch (error) {
+  return Response.json(
+    { error: error.message, code: "INTERNAL_ERROR" },
+    { status: 500 }
+  );
+}
+```
+
+Never expose stack traces in production responses.
+Log the full error with `console.error(error)` before returning.</textarea>
         </div>
         <div class="results-pane">
           <div class="pane-header">
@@ -511,6 +524,7 @@ Use strict TypeScript. Prefer interfaces over types."></textarea>
   }
 
   document.getElementById('editor').addEventListener('input', run);
+  run(); // Lint the pre-filled example on page load
 
   function copyCommand(btn) {
     var cmd = btn.getAttribute('data-cmd');
