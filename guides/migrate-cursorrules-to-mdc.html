@@ -135,19 +135,22 @@ Extract custom hooks.</code></pre>
     </div>
 
     <h2>Running the migration</h2>
-    <p>The migration command reads your <code>.cursorrules</code> file, splits it into logical sections, and writes separate <code>.mdc</code> files with frontmatter.</p>
+    <p>The migration command reads your <code>.cursorrules</code> file, intelligently splits it into logical sections, auto-detects technology-specific globs, and writes separate <code>.mdc</code> files with proper frontmatter.</p>
     <pre><code>npx cursor-doctor migrate</code></pre>
     <p>The command will:</p>
     <ol>
       <li>Read <code>.cursorrules</code> from your project root</li>
       <li>Create <code>.cursor/rules/</code> if it doesn't exist</li>
-      <li>Split rules by section headings (markdown headers like <code># TypeScript</code>)</li>
-      <li>Add frontmatter to each new <code>.mdc</code> file</li>
-      <li>Preserve your original <code>.cursorrules</code> file (you can delete it after verifying)</li>
+      <li>Smart-split rules using three strategies: markdown headings, <code>---</code> delimiters, and topic-change heuristics</li>
+      <li>Auto-detect globs from content (mentions of TypeScript, React, testing, Python, etc. get appropriate file patterns)</li>
+      <li>Set <code>alwaysApply: true</code> for general rules that aren't technology-specific</li>
+      <li>Back up <code>.cursorrules</code> to <code>.cursorrules.bak</code></li>
+      <li>Run a post-migration lint and report any issues</li>
     </ol>
+    <p>Use <code>--dry-run</code> to preview without writing files, or <code>--force</code> to overwrite existing rules.</p>
 
     <div class="callout">
-      <p><strong>Safe operation:</strong> The migrate command never deletes your <code>.cursorrules</code> file. It only creates new <code>.mdc</code> files. Check the output, then delete the old file manually when ready.</p>
+      <p><strong>Safe operation:</strong> The migrate command renames your <code>.cursorrules</code> to <code>.cursorrules.bak</code> instead of deleting it. If <code>.cursor/rules/</code> already has files, it will warn you and stop unless you pass <code>--force</code>.</p>
     </div>
 
     <h2>What to check after migrating</h2>
@@ -162,14 +165,14 @@ Extract custom hooks.</code></pre>
     <h2>Common gotchas</h2>
     <p>A few things that trip people up after migration:</p>
 
-    <h3>Missing globs</h3>
-    <p>If the migrator couldn't guess which files a rule should apply to, it may create a rule with no globs and <code>alwaysApply: false</code>. This means the rule only fires when manually referenced by name. Add globs or set <code>alwaysApply: true</code> if you want it to load automatically.</p>
+    <h3>Review auto-detected globs</h3>
+    <p>The migrator detects technologies from your rule content (TypeScript, React, Python, testing, etc.) and assigns file globs automatically. Rules without technology-specific content get <code>alwaysApply: true</code>. Double-check that the detected globs match your intent.</p>
 
     <h3>Over-splitting</h3>
     <p>If your <code>.cursorrules</code> file had lots of small headings, you might end up with too many tiny <code>.mdc</code> files. Merge related rules back together. One rule per concern is good, one rule per sentence is too granular.</p>
 
     <h3>Old file still active</h3>
-    <p>If both <code>.cursorrules</code> and <code>.cursor/rules/</code> exist, Cursor loads both, and <code>.mdc</code> rules take precedence on conflicts. Delete the old file to avoid confusion and contradictory instructions.</p>
+    <p>The migrator renames <code>.cursorrules</code> to <code>.cursorrules.bak</code>, so it won't be loaded by Cursor. If you renamed it back or have both files present, Cursor loads both, and <code>.mdc</code> rules take precedence on conflicts. Delete the <code>.bak</code> file once you've verified the migration.</p>
 
     <h2>Manual migration</h2>
     <p>If you prefer full control, you can migrate manually:</p>

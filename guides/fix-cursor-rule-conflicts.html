@@ -98,6 +98,7 @@
     <p>For detailed conflict analysis across all formats, use the conflicts command:</p>
     <pre><code>npx cursor-doctor conflicts</code></pre>
     <p>This compares every rule pair, checks for glob overlaps, and reports contradictory directives like "always use X" vs "never use X."</p>
+    <p>As of v1.10.0, cursor-doctor also detects <strong>semantic conflicts</strong> automatically. It checks 48 contradiction patterns across 18 topics: tabs vs spaces, single vs double quotes, functional vs class components, async/await vs callbacks, and more. These fire during <code>scan</code> and <code>lint</code> with no extra flags needed.</p>
 
     <h2>How to fix them</h2>
     <ol>
